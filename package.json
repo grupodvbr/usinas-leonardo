@@ -1,0 +1,7 @@
+{
+  "name":"solar-central-integrada",
+  "private":true,
+  "version":"4.0.0",
+  "type":"module",
+  "engines":{"node":">=20"}
+}
