@@ -1,23 +1,9 @@
 // ======================================================
 // API • ALERTA DE USINA SOLAR
+// VERSÃO SEM TEMPLATE
 // ======================================================
 //
-// TEMPLATE:
-// alerta_usina_solar
-//
-// CATEGORIA:
-// UTILITY
-//
-// IDIOMA:
-// pt_BR
-//
-// VARIÁVEIS DO TEMPLATE:
-//
-// {{1}} = Nome da estação
-// {{2}} = Empresa
-// {{3}} = Plataforma
-// {{4}} = Status
-// {{5}} = Data/Hora
+// ENVIA MENSAGEM DE TEXTO DIRETA PELO WHATSAPP
 //
 // RECEBE:
 //
@@ -32,16 +18,16 @@
 //   "checked_at": "2026-09-08T22:30:00.000Z"
 // }
 //
-// CREDENCIAIS WHATSAPP JÁ EXISTENTES:
+// CREDENCIAIS:
 //
 // PHONE_OTTO
 // TOKEN_PHONE_OTTO
 //
-// SEGURANÇA INTERNA:
+// SEGURANÇA:
 //
 // ALERTA_INTERNAL_SECRET
 //
-// OU, SE NÃO EXISTIR:
+// OU:
 //
 // SESSION_SECRET
 //
@@ -49,7 +35,7 @@
 
 
 // ======================================================
-// WHATSAPP • CONFIGURAÇÃO
+// WHATSAPP
 // ======================================================
 
 const PHONE_NUMBER_ID =
@@ -62,16 +48,7 @@ const WHATSAPP_TOKEN =
 
 
 // ======================================================
-// GRAPH API
-// ======================================================
-//
-// Mantive compatibilidade com sua API existente.
-//
-// Se quiser mudar a versão futuramente,
-// basta criar na Vercel:
-//
-// META_GRAPH_VERSION
-//
+// META GRAPH API
 // ======================================================
 
 const GRAPH_VERSION =
@@ -80,20 +57,7 @@ const GRAPH_VERSION =
 
 
 // ======================================================
-// TEMPLATE NOVO
-// ======================================================
-
-const TEMPLATE_NAME =
-  process.env.WHATSAPP_TEMPLATE_SOLAR ||
-  "alerta_usina_solar";
-
-
-const TEMPLATE_LANGUAGE =
-  "pt_BR";
-
-
-// ======================================================
-// FUSO HORÁRIO
+// FUSO
 // ======================================================
 
 const TIMEZONE =
@@ -116,66 +80,6 @@ const NUMEROS = [
 
 
 // ======================================================
-// JSON RESPONSE
-// ======================================================
-
-function responseJson(
-  data,
-  status = 200
-){
-
-  return new Response(
-
-    JSON.stringify(
-      data,
-      null,
-      2
-    ),
-
-    {
-
-      status,
-
-      headers:{
-
-        "Content-Type":
-          "application/json; charset=utf-8",
-
-        "Cache-Control":
-          "no-store, no-cache, must-revalidate",
-
-        "Pragma":
-          "no-cache"
-
-      }
-
-    }
-
-  );
-
-}
-
-
-// ======================================================
-// SEGREDO INTERNO
-// ======================================================
-
-function getExpectedSecret(){
-
-  return (
-
-    process.env.ALERTA_INTERNAL_SECRET ||
-
-    process.env.SESSION_SECRET ||
-
-    ""
-
-  );
-
-}
-
-
-// ======================================================
 // NORMALIZAR TEXTO
 // ======================================================
 
@@ -185,8 +89,8 @@ function text(
 ){
 
   if(
-    value === null ||
-    value === undefined
+    value === undefined ||
+    value === null
   ){
 
     return fallback;
@@ -199,10 +103,7 @@ function text(
       .trim();
 
 
-  return (
-    result ||
-    fallback
-  );
+  return result || fallback;
 
 }
 
@@ -273,7 +174,7 @@ function statusLabel(
 
 
 // ======================================================
-// NOME BONITO DA PLATAFORMA
+// PLATAFORMA
 // ======================================================
 
 function providerLabel(
@@ -328,7 +229,7 @@ function providerLabel(
 
 
 // ======================================================
-// DATA/HORA BRASIL
+// DATA / HORA
 // ======================================================
 
 function formatDateTime(
@@ -392,6 +293,9 @@ function formatDateTime(
           minute:
             "2-digit",
 
+          second:
+            "2-digit",
+
           hour12:
             false
 
@@ -401,16 +305,6 @@ function formatDateTime(
         date
       );
 
-
-    /*
-     * Normalmente:
-     *
-     * 08/09/2026, 19:35
-     *
-     * Queremos:
-     *
-     * 08/09/2026 às 19:35
-     */
 
     return formatted
       .replace(
@@ -429,7 +323,26 @@ function formatDateTime(
 
 
 // ======================================================
-// VALIDA STATUS PARA ENVIO
+// SEGREDO INTERNO
+// ======================================================
+
+function getExpectedSecret(){
+
+  return (
+
+    process.env.ALERTA_INTERNAL_SECRET ||
+
+    process.env.SESSION_SECRET ||
+
+    ""
+
+  );
+
+}
+
+
+// ======================================================
+// DEFINE SE DEVE ENVIAR
 // ======================================================
 
 function shouldSendAlert(
@@ -439,13 +352,7 @@ function shouldSendAlert(
   /*
    * POR ENQUANTO:
    *
-   * SOMENTE OFFLINE DISPARA WHATSAPP.
-   *
-   * Depois podemos adicionar:
-   *
-   * alarm
-   * warning
-   * voltou online
+   * somente OFFLINE envia.
    */
 
   return (
@@ -459,10 +366,76 @@ function shouldSendAlert(
 
 
 // ======================================================
-// CHAMADA META WHATSAPP
+// MONTA A MENSAGEM
 // ======================================================
 
-async function sendTemplate({
+function buildMessage({
+
+  stationName,
+
+  company,
+
+  provider,
+
+  status,
+
+  checkedAt
+
+}){
+
+  return [
+
+    "⚠️ *ALERTA DE MONITORAMENTO SOLAR*",
+
+    "",
+
+    "Foi detectada uma alteração no monitoramento da estação solar.",
+
+    "",
+
+    `☀️ *Estação:* ${text(
+      stationName,
+      "Não identificada"
+    )}`,
+
+    `🏢 *Empresa:* ${text(
+      company,
+      "Não informada"
+    )}`,
+
+    `🌐 *Plataforma:* ${providerLabel(
+      provider
+    )}`,
+
+    `📡 *Status:* ${statusLabel(
+      status
+    )}`,
+
+    `🕒 *Detectado em:* ${formatDateTime(
+      checkedAt
+    )}`,
+
+    "",
+
+    "⚠️ Verifique a comunicação da usina, o datalogger e o funcionamento dos inversores.",
+
+    "",
+
+    "☀️ *Solar Central*",
+    "_Monitoramento automático de usinas_"
+
+  ].join(
+    "\n"
+  );
+
+}
+
+
+// ======================================================
+// ENVIA TEXTO PELO WHATSAPP
+// ======================================================
+
+async function enviarWhatsApp({
 
   numero,
 
@@ -478,49 +451,29 @@ async function sendTemplate({
 
 }){
 
+  const mensagem =
+    buildMessage({
+
+      stationName,
+
+      company,
+
+      provider,
+
+      status,
+
+      checkedAt
+
+    });
+
+
   const url =
 
     `https://graph.facebook.com/${GRAPH_VERSION}/${PHONE_NUMBER_ID}/messages`;
 
 
   // ====================================================
-  // PARÂMETROS
-  // ====================================================
-
-  const parameterStation =
-    text(
-      stationName,
-      "Usina sem identificação"
-    );
-
-
-  const parameterCompany =
-    text(
-      company,
-      "Não informado"
-    );
-
-
-  const parameterProvider =
-    providerLabel(
-      provider
-    );
-
-
-  const parameterStatus =
-    statusLabel(
-      status
-    );
-
-
-  const parameterDate =
-    formatDateTime(
-      checkedAt
-    );
-
-
-  // ====================================================
-  // PAYLOAD META
+  // PAYLOAD SEM TEMPLATE
   // ====================================================
 
   const payload = {
@@ -535,93 +488,15 @@ async function sendTemplate({
       numero,
 
     type:
-      "template",
+      "text",
 
-    template:{
+    text:{
 
-      name:
-        TEMPLATE_NAME,
+      preview_url:
+        false,
 
-      language:{
-
-        code:
-          TEMPLATE_LANGUAGE
-
-      },
-
-      components:[
-
-        {
-
-          type:
-            "body",
-
-          parameters:[
-
-            // {{1}}
-            {
-
-              type:
-                "text",
-
-              text:
-                parameterStation
-
-            },
-
-
-            // {{2}}
-            {
-
-              type:
-                "text",
-
-              text:
-                parameterCompany
-
-            },
-
-
-            // {{3}}
-            {
-
-              type:
-                "text",
-
-              text:
-                parameterProvider
-
-            },
-
-
-            // {{4}}
-            {
-
-              type:
-                "text",
-
-              text:
-                parameterStatus
-
-            },
-
-
-            // {{5}}
-            {
-
-              type:
-                "text",
-
-              text:
-                parameterDate
-
-            }
-
-          ]
-
-        }
-
-      ]
+      body:
+        mensagem
 
     }
 
@@ -629,7 +504,7 @@ async function sendTemplate({
 
 
   // ====================================================
-  // ENVIA
+  // ENVIO META
   // ====================================================
 
   const response =
@@ -691,34 +566,39 @@ async function sendTemplate({
 
 
   // ====================================================
-  // LOG VERCEL
+  // LOG
   // ====================================================
 
   console.log(
 
-    "[SOLAR WHATSAPP]",
+    "[SOLAR WHATSAPP SEM TEMPLATE]",
 
     JSON.stringify({
 
       numero,
 
       station_name:
-        parameterStation,
+        stationName,
 
-      company:
-        parameterCompany,
+      company,
 
       provider:
-        parameterProvider,
+
+        providerLabel(
+          provider
+        ),
 
       status:
-        parameterStatus,
 
-      date:
-        parameterDate,
+        statusLabel(
+          status
+        ),
 
-      template:
-        TEMPLATE_NAME,
+      checked_at:
+
+        formatDateTime(
+          checkedAt
+        ),
 
       http_status:
         response.status,
@@ -741,9 +621,6 @@ async function sendTemplate({
     http_status:
       response.status,
 
-    template:
-      TEMPLATE_NAME,
-
     meta:
       metaJson
 
@@ -753,409 +630,356 @@ async function sendTemplate({
 
 
 // ======================================================
-// HANDLER PRINCIPAL
-// ======================================================
-//
-// O projeto Solar Central utiliza:
-// export default { async fetch(request) }
-//
+// HANDLER PRINCIPAL VERCEL
 // ======================================================
 
-export default {
+export default async function handler(
+  req,
+  res
+){
 
-  async fetch(
-    request
-  ){
+  try{
 
-    try{
 
+    // ==================================================
+    // SOMENTE POST
+    // ==================================================
 
-      // ==================================================
-      // MÉTODO
-      // ==================================================
+    if(
+      req.method !==
+      "POST"
+    ){
 
-      if(
-        request.method !==
-        "POST"
-      ){
+      return res
+        .status(405)
+        .json({
 
-        return responseJson(
+          ok:
+            false,
 
-          {
+          erro:
+            true,
 
-            ok:
-              false,
+          mensagem:
+            "METHOD NOT ALLOWED",
 
-            erro:
-              true,
+          metodo_esperado:
+            "POST"
 
-            mensagem:
-              "METHOD NOT ALLOWED",
+        });
 
-            metodo_esperado:
-              "POST"
+    }
 
-          },
 
-          405
+    // ==================================================
+    // TOKEN WHATSAPP
+    // ==================================================
 
-        );
+    if(
+      !WHATSAPP_TOKEN
+    ){
 
-      }
+      return res
+        .status(500)
+        .json({
 
+          ok:
+            false,
 
-      // ==================================================
-      // TOKEN META
-      // ==================================================
+          erro:
+            true,
 
-      if(
-        !WHATSAPP_TOKEN
-      ){
+          mensagem:
+            "TOKEN_PHONE_OTTO NÃO CONFIGURADO NA VERCEL"
 
-        return responseJson(
+        });
 
-          {
+    }
 
-            ok:
-              false,
 
-            erro:
-              true,
+    // ==================================================
+    // PHONE NUMBER ID
+    // ==================================================
 
-            mensagem:
-              "TOKEN_PHONE_OTTO NÃO CONFIGURADO NA VERCEL"
+    if(
+      !PHONE_NUMBER_ID
+    ){
 
-          },
+      return res
+        .status(500)
+        .json({
 
-          500
+          ok:
+            false,
 
-        );
+          erro:
+            true,
 
-      }
+          mensagem:
+            "PHONE_OTTO NÃO CONFIGURADO NA VERCEL"
 
+        });
 
-      // ==================================================
-      // PHONE NUMBER ID
-      // ==================================================
+    }
 
-      if(
-        !PHONE_NUMBER_ID
-      ){
 
-        return responseJson(
+    // ==================================================
+    // SEGURANÇA
+    // ==================================================
 
-          {
+    const expectedSecret =
+      getExpectedSecret();
 
-            ok:
-              false,
 
-            erro:
-              true,
+    if(
+      !expectedSecret
+    ){
 
-            mensagem:
-              "PHONE_OTTO NÃO CONFIGURADO NA VERCEL"
+      return res
+        .status(500)
+        .json({
 
-          },
+          ok:
+            false,
 
-          500
+          erro:
+            true,
 
-        );
+          mensagem:
+            "SESSION_SECRET OU ALERTA_INTERNAL_SECRET NÃO CONFIGURADO"
 
-      }
+        });
 
+    }
 
-      // ==================================================
-      // SEGURANÇA INTERNA
-      // ==================================================
 
-      const expectedSecret =
-        getExpectedSecret();
+    const receivedSecret =
 
+      req.headers[
+        "x-alert-secret"
+      ]
 
-      if(
-        !expectedSecret
-      ){
+      ||
 
-        return responseJson(
+      "";
 
-          {
 
-            ok:
-              false,
+    if(
+      receivedSecret !==
+      expectedSecret
+    ){
 
-            erro:
-              true,
+      console.warn(
 
-            mensagem:
-              "SESSION_SECRET OU ALERTA_INTERNAL_SECRET NÃO CONFIGURADO"
-
-          },
-
-          500
-
-        );
-
-      }
-
-
-      const receivedSecret =
-
-        request.headers.get(
-          "x-alert-secret"
-        ) || "";
-
-
-      if(
-        receivedSecret !==
-        expectedSecret
-      ){
-
-        console.warn(
-
-          "[SOLAR ALERTA] CHAMADA NÃO AUTORIZADA"
-
-        );
-
-
-        return responseJson(
-
-          {
-
-            ok:
-              false,
-
-            erro:
-              true,
-
-            mensagem:
-              "NÃO AUTORIZADO"
-
-          },
-
-          401
-
-        );
-
-      }
-
-
-      // ==================================================
-      // JSON RECEBIDO
-      // ==================================================
-
-      let body;
-
-
-      try{
-
-        body =
-          await request.json();
-
-      }catch{
-
-        return responseJson(
-
-          {
-
-            ok:
-              false,
-
-            erro:
-              true,
-
-            mensagem:
-              "JSON INVÁLIDO"
-
-          },
-
-          400
-
-        );
-
-      }
-
-
-      // ==================================================
-      // DADOS
-      // ==================================================
-
-      const provider =
-        text(
-          body?.provider,
-          "solar"
-        );
-
-
-      const stationId =
-        body?.station_id ??
-        null;
-
-
-      const stationName =
-        text(
-          body?.station_name
-        );
-
-
-      const status =
-        normalizeStatus(
-          body?.status
-        );
-
-
-      const company =
-        text(
-          body?.company,
-          "Não informado"
-        );
-
-
-      const label =
-        text(
-          body?.label
-        );
-
-
-      const slot =
-        body?.slot ??
-        null;
-
-
-      const checkedAt =
-        body?.checked_at ||
-        new Date()
-          .toISOString();
-
-
-      // ==================================================
-      // VALIDA ESTAÇÃO
-      // ==================================================
-
-      if(
-        !stationName
-      ){
-
-        return responseJson(
-
-          {
-
-            ok:
-              false,
-
-            erro:
-              true,
-
-            mensagem:
-              "station_name É OBRIGATÓRIO"
-
-          },
-
-          400
-
-        );
-
-      }
-
-
-      // ==================================================
-      // VALIDA STATUS
-      // ==================================================
-
-      if(
-        !status
-      ){
-
-        return responseJson(
-
-          {
-
-            ok:
-              false,
-
-            erro:
-              true,
-
-            mensagem:
-              "status É OBRIGATÓRIO"
-
-          },
-
-          400
-
-        );
-
-      }
-
-
-      // ==================================================
-      // OBJETO PADRÃO DO ALERTA
-      // ==================================================
-
-      const alerta = {
-
-        provider,
-
-        provider_name:
-          providerLabel(
-            provider
-          ),
-
-        station_id:
-          stationId,
-
-        station_name:
-          stationName,
-
-        status,
-
-        status_label:
-          statusLabel(
-            status
-          ),
-
-        company,
-
-        label,
-
-        slot,
-
-        checked_at:
-          checkedAt,
-
-        checked_at_formatted:
-          formatDateTime(
-            checkedAt
-          )
-
-      };
-
-
-      // ==================================================
-      // LOG
-      // ==================================================
-
-      console.log(
-
-        "[ALERTA SOLAR RECEBIDO]",
-
-        JSON.stringify(
-          alerta
-        )
+        "[SOLAR ALERTA] CHAMADA NÃO AUTORIZADA"
 
       );
 
 
-      // ==================================================
-      // NÃO ESTÁ OFFLINE
-      // ==================================================
+      return res
+        .status(401)
+        .json({
 
-      if(
-        !shouldSendAlert(
+          ok:
+            false,
+
+          erro:
+            true,
+
+          mensagem:
+            "NÃO AUTORIZADO"
+
+        });
+
+    }
+
+
+    // ==================================================
+    // BODY
+    // ==================================================
+
+    const body =
+      req.body || {};
+
+
+    // ==================================================
+    // DADOS RECEBIDOS
+    // ==================================================
+
+    const provider =
+      text(
+        body.provider,
+        "solar"
+      );
+
+
+    const stationId =
+      body.station_id ??
+      null;
+
+
+    const stationName =
+      text(
+        body.station_name
+      );
+
+
+    const status =
+      normalizeStatus(
+        body.status
+      );
+
+
+    const company =
+      text(
+        body.company,
+        "Não informada"
+      );
+
+
+    const label =
+      text(
+        body.label
+      );
+
+
+    const slot =
+      body.slot ??
+      null;
+
+
+    const checkedAt =
+      body.checked_at ||
+      new Date()
+        .toISOString();
+
+
+    // ==================================================
+    // VALIDA ESTAÇÃO
+    // ==================================================
+
+    if(
+      !stationName
+    ){
+
+      return res
+        .status(400)
+        .json({
+
+          ok:
+            false,
+
+          erro:
+            true,
+
+          mensagem:
+            "station_name É OBRIGATÓRIO"
+
+        });
+
+    }
+
+
+    // ==================================================
+    // VALIDA STATUS
+    // ==================================================
+
+    if(
+      !status
+    ){
+
+      return res
+        .status(400)
+        .json({
+
+          ok:
+            false,
+
+          erro:
+            true,
+
+          mensagem:
+            "status É OBRIGATÓRIO"
+
+        });
+
+    }
+
+
+    // ==================================================
+    // OBJETO DO ALERTA
+    // ==================================================
+
+    const alerta = {
+
+      provider,
+
+      provider_name:
+
+        providerLabel(
+          provider
+        ),
+
+      station_id:
+        stationId,
+
+      station_name:
+        stationName,
+
+      status,
+
+      status_label:
+
+        statusLabel(
           status
-        )
-      ){
+        ),
 
-        return responseJson({
+      company,
+
+      label,
+
+      slot,
+
+      checked_at:
+        checkedAt,
+
+      checked_at_formatted:
+
+        formatDateTime(
+          checkedAt
+        )
+
+    };
+
+
+    // ==================================================
+    // LOG
+    // ==================================================
+
+    console.log(
+
+      "[ALERTA SOLAR RECEBIDO]",
+
+      JSON.stringify(
+        alerta
+      )
+
+    );
+
+
+    // ==================================================
+    // SE NÃO ESTIVER OFFLINE
+    // ==================================================
+
+    if(
+      !shouldSendAlert(
+        status
+      )
+    ){
+
+      return res
+        .status(200)
+        .json({
 
           ok:
             true,
@@ -1176,156 +1000,154 @@ export default {
 
         });
 
-      }
+    }
 
 
-      // ==================================================
-      // ENVIA WHATSAPP
-      // ==================================================
+    // ==================================================
+    // ENVIA PARA TODOS
+    // ==================================================
 
-      const resultados =
-        [];
-
-
-      for(
-        const numero of
-        NUMEROS
-      ){
-
-        try{
+    const resultados =
+      [];
 
 
-          const resultado =
-            await sendTemplate({
+    for(
+      const numero of
+      NUMEROS
+    ){
 
-              numero,
-
-              stationName,
-
-              company,
-
-              provider,
-
-              status,
-
-              checkedAt
-
-            });
+      try{
 
 
-          resultados.push(
-            resultado
-          );
-
-
-        }catch(error){
-
-
-          console.error(
-
-            "[ERRO ENVIO SOLAR]",
+        const resultado =
+          await enviarWhatsApp({
 
             numero,
 
-            error?.message ||
-            error
+            stationName,
 
-          );
+            company,
 
+            provider,
 
-          resultados.push({
+            status,
 
-            numero,
-
-            ok:
-              false,
-
-            erro:
-              error?.message ||
-              "ERRO AO ENVIAR TEMPLATE"
+            checkedAt
 
           });
 
-        }
 
-      }
-
-
-      // ==================================================
-      // CONTAGEM
-      // ==================================================
-
-      const enviados =
-        resultados.filter(
-
-          item =>
-            item.ok === true
-
-        ).length;
+        resultados.push(
+          resultado
+        );
 
 
-      const falhas =
-        resultados.filter(
-
-          item =>
-            item.ok !== true
-
-        ).length;
+      }catch(error){
 
 
-      // ==================================================
-      // NENHUM ENVIO FUNCIONOU
-      // ==================================================
+        console.error(
 
-      if(
-        enviados === 0
-      ){
+          "[ERRO ENVIO WHATSAPP SOLAR]",
 
-        return responseJson(
+          numero,
 
-          {
-
-            ok:
-              false,
-
-            alerta_recebido:
-              true,
-
-            alerta_disparado:
-              true,
-
-            whatsapp_enviado:
-              false,
-
-            enviados:
-              0,
-
-            falhas,
-
-            total_numeros:
-              NUMEROS.length,
-
-            template:
-              TEMPLATE_NAME,
-
-            alerta,
-
-            resultados
-
-          },
-
-          502
+          error?.message ||
+          error
 
         );
 
+
+        resultados.push({
+
+          numero,
+
+          ok:
+            false,
+
+          erro:
+            error?.message ||
+            "ERRO AO ENVIAR WHATSAPP"
+
+        });
+
       }
 
+    }
 
-      // ==================================================
-      // SUCESSO
-      // ==================================================
 
-      return responseJson({
+    // ==================================================
+    // CONTAGEM
+    // ==================================================
+
+    const enviados =
+      resultados.filter(
+
+        item =>
+          item.ok === true
+
+      ).length;
+
+
+    const falhas =
+      resultados.filter(
+
+        item =>
+          item.ok !== true
+
+      ).length;
+
+
+    // ==================================================
+    // NENHUM FUNCIONOU
+    // ==================================================
+
+    if(
+      enviados === 0
+    ){
+
+      return res
+        .status(502)
+        .json({
+
+          ok:
+            false,
+
+          alerta_recebido:
+            true,
+
+          alerta_disparado:
+            true,
+
+          whatsapp_enviado:
+            false,
+
+          enviados:
+            0,
+
+          falhas,
+
+          total_numeros:
+            NUMEROS.length,
+
+          modo:
+            "texto_sem_template",
+
+          alerta,
+
+          resultados
+
+        });
+
+    }
+
+
+    // ==================================================
+    // SUCESSO
+    // ==================================================
+
+    return res
+      .status(200)
+      .json({
 
         ok:
           true,
@@ -1346,8 +1168,8 @@ export default {
         total_numeros:
           NUMEROS.length,
 
-        template:
-          TEMPLATE_NAME,
+        modo:
+          "texto_sem_template",
 
         alerta,
 
@@ -1356,42 +1178,36 @@ export default {
       });
 
 
-    }catch(error){
+  }catch(error){
 
 
-      console.error(
+    console.error(
 
-        "[ERRO API ALERTA SOLAR]",
+      "[ERRO API ALERTA SOLAR]",
 
-        error?.stack ||
-        error?.message ||
-        error
+      error?.stack ||
+      error?.message ||
+      error
 
-      );
+    );
 
 
-      return responseJson(
+    return res
+      .status(500)
+      .json({
 
-        {
+        ok:
+          false,
 
-          ok:
-            false,
+        erro:
+          true,
 
-          erro:
-            true,
+        mensagem:
+          error?.message ||
+          "ERRO INTERNO NA API DE ALERTA"
 
-          mensagem:
-            error?.message ||
-            "ERRO INTERNO NA API DE ALERTA"
-
-        },
-
-        500
-
-      );
-
-    }
+      });
 
   }
 
-};
+}
