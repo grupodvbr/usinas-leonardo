@@ -1,0 +1,20 @@
+GROWATT API TOKEN - CORREÇÃO V5
+
+SUBSTITUA ESTES 2 ARQUIVOS NO SEU PROJETO:
+1) lib/connectors/shinephone.mjs
+2) lib/core.mjs
+
+NA VERCEL:
+SOLAR_SHINEPHONE_01_API_TOKEN=<NOVO TOKEN>
+SOLAR_SHINEPHONE_01_LABEL=Mercatto
+SOLAR_SHINEPHONE_01_COMPANY=Mercatto Delícia
+SOLAR_SHINEPHONE_01_PLANT=Fazenda Maria Padaria
+
+Opcional:
+SOLAR_SHINEPHONE_01_API_BASE=https://openapi.growatt.com
+
+Pode manter USER e PASSWORD, mas quando API_TOKEN existir o sistema usa o token primeiro.
+
+IMPORTANTE:
+O token mostrado em screenshot/conversa deve ser regenerado antes de uso em produção.
+Depois de salvar a nova variável na Vercel, faça REDEPLOY.
