@@ -300,9 +300,95 @@ button,input{font:inherit}
   .metric b{font-size:11px}
   .metric small{font-size:7px}
 }
+
+
+/* =========================================================
+   SISTEMA OTTO — ABERTURA PREMIUM
+   ========================================================= */
+.ottoSplash{
+  position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 42%,rgba(44,197,117,.19),transparent 27%),
+    radial-gradient(circle at 22% 18%,rgba(91,231,156,.10),transparent 25%),
+    linear-gradient(135deg,#07130d 0%,#0b1d13 48%,#061009 100%);
+  transition:opacity .75s ease,visibility .75s ease;
+}
+.ottoSplash.hide{opacity:0;visibility:hidden;pointer-events:none}
+.ottoSplash::before{
+  content:"";position:absolute;inset:-30%;
+  background:repeating-linear-gradient(90deg,transparent 0 84px,rgba(105,255,173,.035) 85px,transparent 86px 170px);
+  transform:perspective(900px) rotateX(68deg) translateY(18%);transform-origin:center bottom;
+  animation:ottoGrid 8s linear infinite;
+  mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.85) 45%,#000 100%);
+}
+.ottoSplash::after{
+  content:"";position:absolute;width:44vw;height:44vw;min-width:520px;min-height:520px;border-radius:50%;
+  border:1px solid rgba(101,255,172,.10);
+  box-shadow:0 0 0 70px rgba(63,212,130,.025),0 0 0 140px rgba(63,212,130,.018),0 0 130px rgba(29,221,117,.08);
+  animation:ottoOrbit 7s ease-in-out infinite;
+}
+@keyframes ottoGrid{from{transform:perspective(900px) rotateX(68deg) translateY(18%) translateX(0)}to{transform:perspective(900px) rotateX(68deg) translateY(18%) translateX(170px)}}
+@keyframes ottoOrbit{0%,100%{transform:scale(.94) rotate(0deg);opacity:.65}50%{transform:scale(1.03) rotate(9deg);opacity:1}}
+.ottoSplashInner{position:relative;z-index:2;width:min(920px,90vw);text-align:center}
+.ottoEnergy{width:90px;height:90px;margin:0 auto 24px;position:relative;display:grid;place-items:center}
+.ottoEnergy::before,.ottoEnergy::after{content:"";position:absolute;inset:0;border-radius:50%;border:1px solid rgba(104,255,175,.34);animation:ottoPulse 2.4s ease-out infinite}
+.ottoEnergy::after{animation-delay:1.2s}
+@keyframes ottoPulse{0%{transform:scale(.52);opacity:0}35%{opacity:1}100%{transform:scale(1.5);opacity:0}}
+.ottoCore{
+  width:62px;height:62px;border-radius:20px;display:grid;place-items:center;
+  background:linear-gradient(145deg,rgba(58,235,142,.24),rgba(20,127,76,.18));
+  border:1px solid rgba(120,255,184,.38);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 15px 50px rgba(28,217,116,.22);
+  color:#8fffc0;font-size:28px;animation:ottoCoreFloat 3s ease-in-out infinite;
+}
+@keyframes ottoCoreFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-7px) rotate(2deg)}}
+.ottoKicker{color:#70eaa7;font-weight:850;font-size:11px;letter-spacing:.36em;text-transform:uppercase;opacity:0;transform:translateY(12px);animation:ottoReveal .7s .15s forwards}
+.ottoTitle{margin:12px 0 8px;color:#f3fff8;font-size:clamp(46px,7vw,104px);line-height:.96;letter-spacing:-.065em;font-weight:900;opacity:0;transform:translateY(22px) scale(.97);animation:ottoReveal .85s .32s cubic-bezier(.2,.75,.2,1) forwards;text-shadow:0 18px 60px rgba(0,0,0,.34)}
+.ottoTitle span{color:#57e798;text-shadow:0 0 42px rgba(72,239,150,.28)}
+.ottoSubtitle{margin:0;color:#c5d8cd;font-size:clamp(16px,2vw,24px);font-weight:560;letter-spacing:.01em;opacity:0;transform:translateY(18px);animation:ottoReveal .8s .54s forwards}
+@keyframes ottoReveal{to{opacity:1;transform:translateY(0) scale(1)}}
+.ottoLine{width:min(410px,70vw);height:1px;margin:30px auto 19px;overflow:hidden;background:rgba(161,255,204,.10);position:relative}
+.ottoLine::after{content:"";position:absolute;inset:0 auto 0 0;width:36%;background:linear-gradient(90deg,transparent,#61efa2,transparent);animation:ottoScan 1.45s ease-in-out infinite}
+@keyframes ottoScan{from{transform:translateX(-120%)}to{transform:translateX(390%)}}
+.ottoStatus{display:flex;align-items:center;justify-content:center;gap:9px;color:#8fa99a;font-size:11px;font-weight:750;letter-spacing:.12em;text-transform:uppercase;opacity:0;animation:ottoReveal .7s .8s forwards}
+.ottoStatusDot{width:7px;height:7px;border-radius:50%;background:#56e794;box-shadow:0 0 18px #56e794;animation:ottoBlink 1.5s ease-in-out infinite}
+@keyframes ottoBlink{50%{opacity:.35;transform:scale(.75)}}
+.ottoParticles{position:absolute;inset:0;pointer-events:none}
+.ottoParticle{position:absolute;width:3px;height:3px;border-radius:50%;background:#79f5af;box-shadow:0 0 14px rgba(91,245,160,.8);opacity:.45;animation:ottoParticleMove var(--dur) linear infinite;animation-delay:var(--delay)}
+@keyframes ottoParticleMove{from{transform:translateY(20vh) scale(.7);opacity:0}12%{opacity:.5}to{transform:translateY(-115vh) scale(1.15);opacity:0}}
+@media(max-width:680px){.ottoEnergy{width:76px;height:76px;margin-bottom:20px}.ottoCore{width:54px;height:54px;border-radius:18px;font-size:24px}.ottoKicker{font-size:9px;letter-spacing:.28em}.ottoLine{margin-top:24px}.ottoStatus{font-size:9px;letter-spacing:.08em}}
+@media(prefers-reduced-motion:reduce){.ottoSplash *,.ottoSplash::before,.ottoSplash::after{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+
 </style>
 </head>
 <body>
+
+<div id="ottoSplash" class="ottoSplash" aria-label="Sistema OTTO - Monitoramento de usinas">
+  <div class="ottoParticles">
+    <span class="ottoParticle" style="left:5%;bottom:3%;--dur:5s;--delay:-3.5s"></span>
+    <span class="ottoParticle" style="left:11%;bottom:13%;--dur:6s;--delay:-2.8s"></span>
+    <span class="ottoParticle" style="left:18%;bottom:30%;--dur:8s;--delay:-2.8s"></span>
+    <span class="ottoParticle" style="left:27%;bottom:29%;--dur:7s;--delay:-4.2s"></span>
+    <span class="ottoParticle" style="left:35%;bottom:21%;--dur:5s;--delay:0s"></span>
+    <span class="ottoParticle" style="left:43%;bottom:13%;--dur:8s;--delay:-.7s"></span>
+    <span class="ottoParticle" style="left:52%;bottom:12%;--dur:7s;--delay:-2.1s"></span>
+    <span class="ottoParticle" style="left:61%;bottom:11%;--dur:6s;--delay:-3.5s"></span>
+    <span class="ottoParticle" style="left:69%;bottom:3%;--dur:9s;--delay:-4.2s"></span>
+    <span class="ottoParticle" style="left:77%;bottom:27%;--dur:7s;--delay:0s"></span>
+    <span class="ottoParticle" style="left:84%;bottom:12%;--dur:9s;--delay:0s"></span>
+    <span class="ottoParticle" style="left:92%;bottom:4%;--dur:7s;--delay:-.7s"></span>
+    <span class="ottoParticle" style="left:96%;bottom:0%;--dur:6s;--delay:-3.5s"></span>
+  </div>
+  <div class="ottoSplashInner">
+    <div class="ottoEnergy"><div class="ottoCore">ϟ</div></div>
+    <div class="ottoKicker">Tecnologia de monitoramento</div>
+    <div class="ottoTitle">Sistema <span>OTTO</span></div>
+    <p class="ottoSubtitle">Monitoramento de usinas</p>
+    <div class="ottoLine"></div>
+    <div class="ottoStatus"><span class="ottoStatusDot"></span> Inicializando central de energia</div>
+  </div>
+</div>
+
 
 <section id="loginView" class="login">
   <div class="loginCard">
@@ -538,5 +624,22 @@ function plantHtml(p){
 init();
 setInterval(()=>{if(!E.appView.classList.contains('hidden'))refreshAllData()},300000);
 </script>
+
+<script>
+(function(){
+  const splash=document.getElementById('ottoSplash');
+  if(!splash)return;
+  let closed=false;
+  const closeSplash=()=>{
+    if(closed)return;
+    closed=true;
+    splash.classList.add('hide');
+    setTimeout(()=>splash.remove(),850);
+  };
+  window.addEventListener('load',()=>setTimeout(closeSplash,2350),{once:true});
+  setTimeout(closeSplash,4200);
+})();
+</script>
+
 </body>
 </html>
