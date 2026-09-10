@@ -2,644 +2,112 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#f5f8f6">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4f8f5">
 <title>Sistema OTTO • Monitoramento de usinas</title>
 <style>
 :root{
-  --bg:#f3f7f5;
-  --paper:#ffffff;
-  --paper2:#f8fbf9;
-  --text:#17251d;
-  --muted:#718078;
-  --line:#dde8e1;
-  --green:#168b55;
-  --green2:#24ad69;
-  --greenSoft:#eaf8f0;
-  --amber:#d18b16;
-  --red:#c94d4d;
-  --shadow:0 10px 32px rgba(24,62,40,.07);
-  --shadow2:0 18px 45px rgba(24,62,40,.10);
-  --radius:22px;
+  --bg:#f3f7f5;--paper:#fff;--paper2:#f8fbf9;--text:#15231b;--muted:#6f7d75;
+  --line:#dde8e1;--green:#168b55;--green2:#27ad69;--green3:#0d7545;
+  --greenSoft:#eaf8f0;--red:#c84b4b;--amber:#c88a1d;
+  --shadow:0 12px 34px rgba(21,63,39,.07);--shadow2:0 18px 48px rgba(21,63,39,.10);
+  --r:22px;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{
-  margin:0;
-  min-height:100vh;
-  background:linear-gradient(145deg,#f9fbfa 0%,#f2f7f4 45%,#edf5f0 100%);
-  color:var(--text);
-  font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
-}
-button,input{font:inherit}
-.hidden{display:none!important}
-.muted{color:var(--muted)}
+body{margin:0;min-height:100vh;background:linear-gradient(145deg,#fafcfb 0%,#f2f7f4 48%,#edf5f0 100%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button,input{font:inherit}.hidden{display:none!important}
 
-/* LOGIN */
-.login{
-  min-height:100vh;
-  display:grid;
-  place-items:center;
-  padding:24px;
-}
-.loginCard{
-  width:min(430px,100%);
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:30px;
-  padding:34px;
-  box-shadow:var(--shadow2);
-}
-.brandIcon{
-  width:58px;
-  height:58px;
-  border-radius:18px;
-  background:linear-gradient(135deg,#b7f5ce,#4bd98a);
-  color:#0d6a40;
-  display:grid;
-  place-items:center;
-  font-size:27px;
-  box-shadow:0 10px 26px rgba(37,169,104,.16);
-}
-.eyebrow{
-  margin-top:18px;
-  color:var(--green);
-  font-size:11px;
-  font-weight:900;
-  letter-spacing:.17em;
-}
-.login h1{font-size:35px;margin:10px 0 6px}
-.login p{margin:0 0 22px;line-height:1.55}
-.field{margin:15px 0}
-.field label{display:block;font-size:12px;font-weight:800;margin-bottom:7px}
-.field input{
-  width:100%;
-  padding:14px 15px;
-  border:1px solid var(--line);
-  border-radius:14px;
-  background:#fbfdfc;
-  outline:none;
-}
-.field input:focus{border-color:#85cda8;box-shadow:0 0 0 4px #e8f7ee}
-.btn{
-  border:0;
-  border-radius:13px;
-  padding:12px 15px;
-  font-weight:850;
-  cursor:pointer;
-}
-.btn.primary{background:linear-gradient(135deg,var(--green),var(--green2));color:#fff}
-.btn.full{width:100%}
-.errorBox{background:#fff0f0;color:#b43f3f;padding:11px 13px;border-radius:12px;font-size:13px;margin-top:12px}
-
-/* APP */
-.shell{min-height:100vh}
-.main{
-  width:min(1780px,100%);
-  margin:0 auto;
-  padding:28px 30px 54px;
-}
-.header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:18px;
-  margin-bottom:20px;
-}
-.headerBrand{display:flex;align-items:center;gap:13px}
-.headerBrand .brandIcon{width:46px;height:46px;border-radius:14px;font-size:20px}
-.headerBrand strong{display:block;font-size:20px;letter-spacing:-.025em}
-.headerBrand small{display:block;margin-top:2px;color:var(--muted);font-size:11px;font-weight:750;letter-spacing:.06em}
-.logout{
-  border:1px solid var(--line);
-  background:#fff;
-  color:#59685f;
-  border-radius:11px;
-  padding:9px 12px;
-  font-size:12px;
-  font-weight:800;
-  cursor:pointer;
-}
-
-.hero{
-  background:linear-gradient(135deg,#0f7548 0%,#16965a 55%,#26ad6b 100%);
-  color:#fff;
-  border-radius:28px;
-  padding:24px 26px;
-  box-shadow:0 18px 48px rgba(22,139,85,.18);
-  margin-bottom:18px;
-  overflow:hidden;
-  position:relative;
-}
-.hero:after{
-  content:"";
-  position:absolute;
-  width:380px;height:380px;border-radius:50%;
-  right:-150px;top:-210px;
-  background:rgba(255,255,255,.08);
-}
-.heroTop{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;position:relative;z-index:1}
-.hero h1{margin:4px 0 6px;font-size:31px;letter-spacing:-.04em}
-.hero p{margin:0;color:rgba(255,255,255,.74);font-size:13px}
-.periodPill{
-  padding:9px 12px;
-  border:1px solid rgba(255,255,255,.22);
-  border-radius:999px;
-  background:rgba(255,255,255,.10);
-  font-size:12px;
-  font-weight:800;
-  white-space:nowrap;
-}
-
-.summary{
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:13px;
-  margin-bottom:24px;
-}
-.summaryCard{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:20px;
-  padding:18px 19px;
-  box-shadow:var(--shadow);
-  min-width:0;
-}
-.summaryCard small{display:block;color:var(--muted);font-size:11px;font-weight:800;margin-bottom:6px}
-.summaryCard strong{display:block;font-size:26px;line-height:1.08;letter-spacing:-.035em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.summaryCard span{display:block;margin-top:6px;color:#88968e;font-size:10px;font-weight:700}
-.summaryCard.primary{border-color:#ccebd9;background:linear-gradient(180deg,#fff,#f6fcf8)}
-.summaryCard.primary strong{color:var(--green)}
-
-.apps{display:flex;flex-direction:column;gap:18px}
-.platform{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:24px;
-  box-shadow:var(--shadow);
-  overflow:hidden;
-}
-.platformHead{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:18px;
-  padding:16px 18px;
-  border-bottom:1px solid var(--line);
-  background:linear-gradient(180deg,#fff,#fbfdfc);
-}
-.platformId{display:flex;align-items:center;gap:12px;min-width:0}
-.platformId img{
-  width:46px;height:46px;border-radius:13px;object-fit:cover;
-  background:#fff;border:1px solid #edf2ee;
-}
-.platformId h2{margin:0;font-size:18px;letter-spacing:-.02em}
-.platformId p{margin:2px 0 0;color:var(--muted);font-size:11px}
-.appBadge{
-  display:inline-flex;align-items:center;gap:7px;
-  padding:7px 10px;border-radius:999px;
-  background:var(--greenSoft);color:var(--green);
-  font-size:10px;font-weight:900;white-space:nowrap;
-}
-.appBadge:before{content:"";width:7px;height:7px;border-radius:50%;background:#2db970;box-shadow:0 0 0 4px rgba(45,185,112,.10)}
-
-.plantGrid{
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:12px;
-  padding:14px;
-  align-items:start;
-}
-.plant{
-  min-width:0;
-  border:1px solid #dfe9e3;
-  border-radius:18px;
-  background:linear-gradient(180deg,#ffffff 0%,#fbfdfc 100%);
-  padding:14px;
-  box-shadow:0 5px 18px rgba(31,72,46,.045);
-}
-.plantTitle{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:11px}
-.plantTitleText{min-width:0}
-.plantTitle strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.plantTitle small{display:block;color:var(--muted);font-size:9px;font-weight:750;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.statusPill{
-  display:inline-flex;align-items:center;gap:5px;
-  padding:5px 7px;border-radius:999px;
-  background:#f7faf8;border:1px solid #e7eee9;
-  font-size:8px;font-weight:850;color:#69776f;white-space:nowrap;
-}
-.dot{width:6px;height:6px;border-radius:50%;background:#a7b4ac}
-.dot.ok{background:#2bb56e}.dot.bad{background:#d05a5a}.dot.wait{background:#e0a139}
-.metricGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
-.metric{
-  min-width:0;
-  padding:10px 10px;
-  border-radius:11px;
-  background:#f5f9f7;
-  border:1px solid #edf3ef;
-}
-.metric small{display:block;color:#85928a;font-size:8px;font-weight:800;margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em}
-.metric b{display:block;font-size:13px;letter-spacing:-.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.metric.emphasis{background:var(--greenSoft);border-color:#d8f0e1}
-.metric.emphasis b{color:var(--green)}
-.empty{padding:30px 18px;color:var(--muted);font-size:13px}
-.loading{padding:28px 18px;color:var(--muted);font-size:13px}
-.loadingBar{height:5px;background:#edf3ef;border-radius:999px;overflow:hidden;margin-top:10px;max-width:260px}
-.loadingBar span{display:block;width:40%;height:100%;background:linear-gradient(90deg,#a7e9c1,#24a967);animation:slide 1.2s linear infinite}
-@keyframes slide{from{transform:translateX(-120%)}to{transform:translateX(350%)}}
-.error{margin:14px;padding:12px 13px;border-radius:12px;background:#fff2f2;color:#a94747;font-size:12px}
-
-@media(max-width:1150px){
-  .plantGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .summary{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-@media(max-width:680px){
-  .main{padding:16px 14px 34px}
-  .header{margin-bottom:14px}
-  .headerBrand strong{font-size:17px}
-  .headerBrand small{font-size:9px}
-  .headerBrand .brandIcon{width:40px;height:40px}
-  .logout{padding:8px 10px;font-size:11px}
-  .hero{padding:20px 18px;border-radius:22px}
-  .heroTop{display:block}
-  .hero h1{font-size:25px}
-  .periodPill{display:inline-block;margin-top:13px}
-  .summary{grid-template-columns:1fr 1fr;gap:9px}
-  .summaryCard{padding:14px;border-radius:16px}
-  .summaryCard strong{font-size:20px}
-  .platform{border-radius:19px}
-  .platformHead{padding:13px;align-items:flex-start}
-  .platformId img{width:40px;height:40px}
-  .platformId h2{font-size:16px}
-  .appBadge{font-size:9px;padding:6px 8px}
-  .plantGrid{grid-template-columns:1fr;padding:10px;gap:9px}
-  .plant{padding:12px;border-radius:15px}
-  .metric b{font-size:12px}
-}
-
-/* TV / MONITORES GRANDES: 4 USINAS POR LINHA, SEM ZOOM ARTIFICIAL */
-@media(min-width:1600px){
-  .main{width:100%;max-width:none;padding:22px 26px 44px}
-  .header{margin-bottom:15px}
-  .hero{padding:20px 22px;margin-bottom:14px}
-  .hero h1{font-size:28px}
-  .summary{grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-bottom:18px}
-  .summaryCard{padding:15px 16px;border-radius:17px}
-  .summaryCard strong{font-size:23px}
-  .apps{gap:14px}
-  .platform{border-radius:20px}
-  .platformHead{padding:12px 14px}
-  .platformId img{width:40px;height:40px;border-radius:11px}
-  .platformId h2{font-size:16px}
-  .plantGrid{grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;padding:10px}
-  .plant{padding:11px;border-radius:14px}
-  .plantTitle{margin-bottom:8px}
-  .plantTitle strong{font-size:12px}
-  .metricGrid{gap:5px}
-  .metric{padding:8px;border-radius:9px}
-  .metric b{font-size:11px}
-  .metric small{font-size:7px}
-}
-
-
-/* =========================================================
-   SISTEMA OTTO — ABERTURA PREMIUM
-   ========================================================= */
-.ottoSplash{
-  position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;
-  background:
-    radial-gradient(circle at 50% 42%,rgba(44,197,117,.19),transparent 27%),
-    radial-gradient(circle at 22% 18%,rgba(91,231,156,.10),transparent 25%),
-    linear-gradient(135deg,#07130d 0%,#0b1d13 48%,#061009 100%);
-  transition:opacity .75s ease,visibility .75s ease;
-}
+/* ABERTURA OTTO */
+.ottoSplash{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle at 50% 42%,rgba(44,197,117,.19),transparent 27%),radial-gradient(circle at 22% 18%,rgba(91,231,156,.10),transparent 25%),linear-gradient(135deg,#07130d 0%,#0b1d13 48%,#061009 100%);transition:opacity .75s ease,visibility .75s ease}
 .ottoSplash.hide{opacity:0;visibility:hidden;pointer-events:none}
-.ottoSplash::before{
-  content:"";position:absolute;inset:-30%;
-  background:repeating-linear-gradient(90deg,transparent 0 84px,rgba(105,255,173,.035) 85px,transparent 86px 170px);
-  transform:perspective(900px) rotateX(68deg) translateY(18%);transform-origin:center bottom;
-  animation:ottoGrid 8s linear infinite;
-  mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.85) 45%,#000 100%);
-}
-.ottoSplash::after{
-  content:"";position:absolute;width:44vw;height:44vw;min-width:520px;min-height:520px;border-radius:50%;
-  border:1px solid rgba(101,255,172,.10);
-  box-shadow:0 0 0 70px rgba(63,212,130,.025),0 0 0 140px rgba(63,212,130,.018),0 0 130px rgba(29,221,117,.08);
-  animation:ottoOrbit 7s ease-in-out infinite;
-}
+.ottoSplash::before{content:"";position:absolute;inset:-30%;background:repeating-linear-gradient(90deg,transparent 0 84px,rgba(105,255,173,.035) 85px,transparent 86px 170px);transform:perspective(900px) rotateX(68deg) translateY(18%);transform-origin:center bottom;animation:ottoGrid 8s linear infinite;mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.85) 45%,#000 100%)}
+.ottoSplash::after{content:"";position:absolute;width:44vw;height:44vw;min-width:520px;min-height:520px;border-radius:50%;border:1px solid rgba(101,255,172,.10);box-shadow:0 0 0 70px rgba(63,212,130,.025),0 0 0 140px rgba(63,212,130,.018),0 0 130px rgba(29,221,117,.08);animation:ottoOrbit 7s ease-in-out infinite}
 @keyframes ottoGrid{from{transform:perspective(900px) rotateX(68deg) translateY(18%) translateX(0)}to{transform:perspective(900px) rotateX(68deg) translateY(18%) translateX(170px)}}
 @keyframes ottoOrbit{0%,100%{transform:scale(.94) rotate(0deg);opacity:.65}50%{transform:scale(1.03) rotate(9deg);opacity:1}}
-.ottoSplashInner{position:relative;z-index:2;width:min(920px,90vw);text-align:center}
-.ottoEnergy{width:90px;height:90px;margin:0 auto 24px;position:relative;display:grid;place-items:center}
-.ottoEnergy::before,.ottoEnergy::after{content:"";position:absolute;inset:0;border-radius:50%;border:1px solid rgba(104,255,175,.34);animation:ottoPulse 2.4s ease-out infinite}
-.ottoEnergy::after{animation-delay:1.2s}
-@keyframes ottoPulse{0%{transform:scale(.52);opacity:0}35%{opacity:1}100%{transform:scale(1.5);opacity:0}}
-.ottoCore{
-  width:62px;height:62px;border-radius:20px;display:grid;place-items:center;
-  background:linear-gradient(145deg,rgba(58,235,142,.24),rgba(20,127,76,.18));
-  border:1px solid rgba(120,255,184,.38);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 15px 50px rgba(28,217,116,.22);
-  color:#8fffc0;font-size:28px;animation:ottoCoreFloat 3s ease-in-out infinite;
-}
-@keyframes ottoCoreFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-7px) rotate(2deg)}}
-.ottoKicker{color:#70eaa7;font-weight:850;font-size:11px;letter-spacing:.36em;text-transform:uppercase;opacity:0;transform:translateY(12px);animation:ottoReveal .7s .15s forwards}
-.ottoTitle{margin:12px 0 8px;color:#f3fff8;font-size:clamp(46px,7vw,104px);line-height:.96;letter-spacing:-.065em;font-weight:900;opacity:0;transform:translateY(22px) scale(.97);animation:ottoReveal .85s .32s cubic-bezier(.2,.75,.2,1) forwards;text-shadow:0 18px 60px rgba(0,0,0,.34)}
-.ottoTitle span{color:#57e798;text-shadow:0 0 42px rgba(72,239,150,.28)}
-.ottoSubtitle{margin:0;color:#c5d8cd;font-size:clamp(16px,2vw,24px);font-weight:560;letter-spacing:.01em;opacity:0;transform:translateY(18px);animation:ottoReveal .8s .54s forwards}
-@keyframes ottoReveal{to{opacity:1;transform:translateY(0) scale(1)}}
-.ottoLine{width:min(410px,70vw);height:1px;margin:30px auto 19px;overflow:hidden;background:rgba(161,255,204,.10);position:relative}
-.ottoLine::after{content:"";position:absolute;inset:0 auto 0 0;width:36%;background:linear-gradient(90deg,transparent,#61efa2,transparent);animation:ottoScan 1.45s ease-in-out infinite}
-@keyframes ottoScan{from{transform:translateX(-120%)}to{transform:translateX(390%)}}
-.ottoStatus{display:flex;align-items:center;justify-content:center;gap:9px;color:#8fa99a;font-size:11px;font-weight:750;letter-spacing:.12em;text-transform:uppercase;opacity:0;animation:ottoReveal .7s .8s forwards}
-.ottoStatusDot{width:7px;height:7px;border-radius:50%;background:#56e794;box-shadow:0 0 18px #56e794;animation:ottoBlink 1.5s ease-in-out infinite}
-@keyframes ottoBlink{50%{opacity:.35;transform:scale(.75)}}
-.ottoParticles{position:absolute;inset:0;pointer-events:none}
-.ottoParticle{position:absolute;width:3px;height:3px;border-radius:50%;background:#79f5af;box-shadow:0 0 14px rgba(91,245,160,.8);opacity:.45;animation:ottoParticleMove var(--dur) linear infinite;animation-delay:var(--delay)}
-@keyframes ottoParticleMove{from{transform:translateY(20vh) scale(.7);opacity:0}12%{opacity:.5}to{transform:translateY(-115vh) scale(1.15);opacity:0}}
-@media(max-width:680px){.ottoEnergy{width:76px;height:76px;margin-bottom:20px}.ottoCore{width:54px;height:54px;border-radius:18px;font-size:24px}.ottoKicker{font-size:9px;letter-spacing:.28em}.ottoLine{margin-top:24px}.ottoStatus{font-size:9px;letter-spacing:.08em}}
-@media(prefers-reduced-motion:reduce){.ottoSplash *,.ottoSplash::before,.ottoSplash::after{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+.ottoSplashInner{position:relative;z-index:2;width:min(920px,90vw);text-align:center}.ottoEnergy{width:90px;height:90px;margin:0 auto 24px;position:relative;display:grid;place-items:center}.ottoEnergy::before,.ottoEnergy::after{content:"";position:absolute;inset:0;border-radius:50%;border:1px solid rgba(104,255,175,.34);animation:ottoPulse 2.4s ease-out infinite}.ottoEnergy::after{animation-delay:1.2s}@keyframes ottoPulse{0%{transform:scale(.52);opacity:0}35%{opacity:1}100%{transform:scale(1.5);opacity:0}}
+.ottoCore{width:62px;height:62px;border-radius:20px;display:grid;place-items:center;background:linear-gradient(145deg,rgba(58,235,142,.24),rgba(20,127,76,.18));border:1px solid rgba(120,255,184,.38);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 15px 50px rgba(28,217,116,.22);color:#8fffc0;font-size:28px;animation:ottoCoreFloat 3s ease-in-out infinite}@keyframes ottoCoreFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-7px) rotate(2deg)}}
+.ottoKicker{color:#70eaa7;font-weight:850;font-size:11px;letter-spacing:.36em;text-transform:uppercase;opacity:0;transform:translateY(12px);animation:ottoReveal .7s .15s forwards}.ottoTitle{margin:12px 0 8px;color:#f3fff8;font-size:clamp(46px,7vw,104px);line-height:.96;letter-spacing:-.065em;font-weight:900;opacity:0;transform:translateY(22px) scale(.97);animation:ottoReveal .85s .32s cubic-bezier(.2,.75,.2,1) forwards;text-shadow:0 18px 60px rgba(0,0,0,.34)}.ottoTitle span{color:#57e798;text-shadow:0 0 42px rgba(72,239,150,.28)}.ottoSubtitle{margin:0;color:#c5d8cd;font-size:clamp(16px,2vw,24px);font-weight:560;opacity:0;transform:translateY(18px);animation:ottoReveal .8s .54s forwards}@keyframes ottoReveal{to{opacity:1;transform:translateY(0) scale(1)}}
+.ottoLine{width:min(410px,70vw);height:1px;margin:30px auto 19px;overflow:hidden;background:rgba(161,255,204,.10);position:relative}.ottoLine::after{content:"";position:absolute;inset:0 auto 0 0;width:36%;background:linear-gradient(90deg,transparent,#61efa2,transparent);animation:ottoScan 1.45s ease-in-out infinite}@keyframes ottoScan{from{transform:translateX(-120%)}to{transform:translateX(390%)}}
+.ottoStatus{display:flex;align-items:center;justify-content:center;gap:9px;color:#8fa99a;font-size:11px;font-weight:750;letter-spacing:.12em;text-transform:uppercase;opacity:0;animation:ottoReveal .7s .8s forwards}.ottoStatusDot{width:7px;height:7px;border-radius:50%;background:#56e794;box-shadow:0 0 18px #56e794;animation:ottoBlink 1.5s ease-in-out infinite}@keyframes ottoBlink{50%{opacity:.35;transform:scale(.75)}}
+.ottoParticles{position:absolute;inset:0;pointer-events:none}.ottoParticle{position:absolute;width:3px;height:3px;border-radius:50%;background:#79f5af;box-shadow:0 0 14px rgba(91,245,160,.8);opacity:.45;animation:ottoParticleMove var(--dur) linear infinite;animation-delay:var(--delay)}@keyframes ottoParticleMove{from{transform:translateY(20vh) scale(.7);opacity:0}12%{opacity:.5}to{transform:translateY(-115vh) scale(1.15);opacity:0}}
 
+/* LOGIN */
+.login{min-height:100vh;display:grid;place-items:center;padding:24px}.loginCard{width:min(430px,100%);background:#fff;border:1px solid var(--line);border-radius:28px;padding:32px;box-shadow:var(--shadow2)}.brandIcon{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#b8f5cf,#48d989);color:#0c6940;display:grid;place-items:center;font-size:24px;box-shadow:0 8px 24px rgba(37,169,104,.16)}.eyebrow{margin-top:16px;font-size:10px;letter-spacing:.18em;color:var(--green);font-weight:900}.login h1{font-size:34px;margin:10px 0 6px;letter-spacing:-.04em}.muted{color:var(--muted)}.field{margin:17px 0}.field label{display:block;font-size:12px;font-weight:800;margin-bottom:7px}.field input{width:100%;padding:14px 15px;border:1px solid var(--line);border-radius:14px;background:#fbfdfc;outline:none}.field input:focus{border-color:#84cba6;box-shadow:0 0 0 4px #e8f7ee}.btn{border:0;border-radius:13px;padding:12px 15px;font-weight:850;cursor:pointer}.btn.primary{background:linear-gradient(135deg,var(--green),var(--green2));color:#fff}.btn.full{width:100%}.errorBox{background:#fff0f0;color:var(--red);padding:11px 13px;border-radius:12px;font-size:13px;margin-top:12px}
+
+/* PAINEL LIMPO */
+.shell{min-height:100vh}.main{width:100%;max-width:1920px;margin:0 auto;padding:24px 28px 54px}.header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}.headerBrand{display:flex;align-items:center;gap:12px}.headerBrand .brandIcon{width:44px;height:44px;border-radius:13px;font-size:20px}.headerBrand strong{display:block;font-size:18px;letter-spacing:-.025em}.headerBrand small{display:block;margin-top:2px;color:var(--muted);font-size:9px;font-weight:850;letter-spacing:.13em}.logout{border:1px solid var(--line);background:#fff;color:#65736b;border-radius:12px;padding:9px 12px;font-weight:800;cursor:pointer}
+.hero{position:relative;overflow:hidden;border-radius:26px;padding:27px 28px;color:#fff;background:linear-gradient(120deg,#0f7043 0%,#159455 56%,#27ae68 100%);box-shadow:0 18px 44px rgba(18,123,72,.20);margin-bottom:16px}.hero::after{content:"";position:absolute;width:360px;height:360px;border-radius:50%;right:-110px;top:-190px;border:1px solid rgba(255,255,255,.16);box-shadow:0 0 0 48px rgba(255,255,255,.035),0 0 0 96px rgba(255,255,255,.025)}.heroTop{position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:space-between;gap:20px}.hero h1{margin:4px 0 5px;font-size:clamp(27px,2.7vw,42px);letter-spacing:-.045em}.hero p{margin:0;color:rgba(255,255,255,.78);font-size:14px}.periodPill{white-space:nowrap;padding:10px 13px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);font-size:12px;font-weight:850;text-transform:capitalize}
+.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin:0 0 20px}.summaryCard{background:#fff;border:1px solid var(--line);border-radius:19px;padding:17px 18px;box-shadow:0 8px 26px rgba(22,58,38,.045)}.summaryCard.primary{background:linear-gradient(180deg,#fff,#f7fcf9);border-color:#d4eadd}.summaryCard small{display:block;color:var(--muted);font-size:11px;font-weight:800}.summaryCard strong{display:block;margin-top:4px;font-size:clamp(22px,2vw,31px);letter-spacing:-.035em}.summaryCard span{display:block;margin-top:2px;color:#97a49d;font-size:10px}
+.apps{display:grid;gap:18px}.platform{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:var(--shadow)}.platformHead{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 18px;border-bottom:1px solid #e8efea;background:linear-gradient(180deg,#fff,#fcfefc)}.platformId{display:flex;align-items:center;gap:11px}.platformId img{width:42px;height:42px;border-radius:12px;object-fit:contain;background:#fff;border:1px solid #edf2ee;padding:4px}.platformId h2{margin:0;font-size:18px;letter-spacing:-.025em}.platformId p{margin:2px 0 0;color:var(--muted);font-size:11px}.appBadge{display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:850;color:var(--green);background:var(--greenSoft);padding:7px 10px;border-radius:999px}.appBadge::before{content:"";width:7px;height:7px;border-radius:50%;background:#27b66d;box-shadow:0 0 0 3px rgba(39,182,109,.10)}
+/* 4 POSIÇÕES FIXAS POR LINHA NO DESKTOP/TV */
+.plantGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:14px;align-items:stretch}.plant{min-width:0;background:#fff;border:1px solid #dfe8e2;border-radius:18px;padding:14px;box-shadow:0 7px 20px rgba(22,58,38,.045)}.plantTitle{display:flex;justify-content:space-between;align-items:flex-start;gap:9px;padding-bottom:11px;border-bottom:1px solid #eef3ef}.plantTitleText{min-width:0}.plantTitle strong{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.plantTitle small{display:block;margin-top:3px;color:var(--muted);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.statusPill{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;padding:6px 8px;border:1px solid #e1e9e4;border-radius:999px;background:#fbfdfc;font-size:9px;font-weight:800;color:#68766e;text-transform:capitalize}.dot{width:6px;height:6px;border-radius:50%;background:#b8c2bc}.dot.ok{background:#28b56c}.dot.bad{background:#d25858}.dot.wait{background:#dfa02e}
+.metricGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}.metric{min-width:0;background:#f7faf8;border:1px solid #edf2ee;border-radius:11px;padding:9px 10px}.metric.emphasis{background:#eef9f2;border-color:#dcefe3}.metric small{display:block;color:#7e8b83;font-size:9px;font-weight:750}.metric b{display:block;margin-top:2px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.01em}.loading,.empty,.error{padding:34px 18px;text-align:center;color:var(--muted);font-size:13px}.error{color:#9c5555}.loadingBar{width:min(320px,80%);height:5px;margin:12px auto 0;background:#edf3ef;border-radius:999px;overflow:hidden}.loadingBar span{display:block;width:40%;height:100%;background:linear-gradient(90deg,#9ce4b9,#24a967);animation:loadSlide 1.2s infinite}@keyframes loadSlide{from{transform:translateX(-120%)}to{transform:translateX(320%)}}
+
+@media(max-width:1100px){.plantGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.main{padding:15px 12px 36px}.header{margin-bottom:13px}.headerBrand .brandIcon{width:39px;height:39px}.headerBrand strong{font-size:16px}.logout{padding:8px 10px;font-size:12px}.hero{padding:22px 18px;border-radius:21px}.heroTop{display:block}.periodPill{display:inline-flex;margin-top:15px}.summary{gap:9px}.summaryCard{padding:14px 13px;border-radius:16px}.summaryCard strong{font-size:21px}.plantGrid{grid-template-columns:1fr;padding:10px;gap:10px}.platform{border-radius:19px}.platformHead{padding:13px}.platformId img{width:38px;height:38px}.metric b{font-size:14px}}
+@media(min-width:1600px){.main{max-width:none;padding:24px 32px 60px}.plantGrid{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:16px}.plant{padding:15px}.platformId h2{font-size:20px}.plantTitle strong{font-size:16px}.metric small{font-size:10px}.metric b{font-size:14px}}
+@media(min-width:2400px){.main{padding-left:42px;padding-right:42px}.plantGrid{gap:16px}.plant{padding:17px}.metric{padding:11px}.metric b{font-size:15px}}
+@media(prefers-reduced-motion:reduce){.ottoSplash *,.ottoSplash::before,.ottoSplash::after{animation-duration:.01ms!important;animation-iteration-count:1!important}}
 </style>
 </head>
 <body>
-
 <div id="ottoSplash" class="ottoSplash" aria-label="Sistema OTTO - Monitoramento de usinas">
   <div class="ottoParticles">
-    <span class="ottoParticle" style="left:5%;bottom:3%;--dur:5s;--delay:-3.5s"></span>
-    <span class="ottoParticle" style="left:11%;bottom:13%;--dur:6s;--delay:-2.8s"></span>
-    <span class="ottoParticle" style="left:18%;bottom:30%;--dur:8s;--delay:-2.8s"></span>
-    <span class="ottoParticle" style="left:27%;bottom:29%;--dur:7s;--delay:-4.2s"></span>
-    <span class="ottoParticle" style="left:35%;bottom:21%;--dur:5s;--delay:0s"></span>
-    <span class="ottoParticle" style="left:43%;bottom:13%;--dur:8s;--delay:-.7s"></span>
-    <span class="ottoParticle" style="left:52%;bottom:12%;--dur:7s;--delay:-2.1s"></span>
-    <span class="ottoParticle" style="left:61%;bottom:11%;--dur:6s;--delay:-3.5s"></span>
-    <span class="ottoParticle" style="left:69%;bottom:3%;--dur:9s;--delay:-4.2s"></span>
-    <span class="ottoParticle" style="left:77%;bottom:27%;--dur:7s;--delay:0s"></span>
-    <span class="ottoParticle" style="left:84%;bottom:12%;--dur:9s;--delay:0s"></span>
-    <span class="ottoParticle" style="left:92%;bottom:4%;--dur:7s;--delay:-.7s"></span>
-    <span class="ottoParticle" style="left:96%;bottom:0%;--dur:6s;--delay:-3.5s"></span>
+    <span class="ottoParticle" style="left:5%;bottom:3%;--dur:5s;--delay:-3.5s"></span><span class="ottoParticle" style="left:11%;bottom:13%;--dur:6s;--delay:-2.8s"></span><span class="ottoParticle" style="left:18%;bottom:30%;--dur:8s;--delay:-2.8s"></span><span class="ottoParticle" style="left:27%;bottom:29%;--dur:7s;--delay:-4.2s"></span><span class="ottoParticle" style="left:35%;bottom:21%;--dur:5s;--delay:0s"></span><span class="ottoParticle" style="left:43%;bottom:13%;--dur:8s;--delay:-.7s"></span><span class="ottoParticle" style="left:52%;bottom:12%;--dur:7s;--delay:-2.1s"></span><span class="ottoParticle" style="left:61%;bottom:11%;--dur:6s;--delay:-3.5s"></span><span class="ottoParticle" style="left:69%;bottom:3%;--dur:9s;--delay:-4.2s"></span><span class="ottoParticle" style="left:77%;bottom:27%;--dur:7s;--delay:0s"></span><span class="ottoParticle" style="left:84%;bottom:12%;--dur:9s;--delay:0s"></span><span class="ottoParticle" style="left:92%;bottom:4%;--dur:7s;--delay:-.7s"></span><span class="ottoParticle" style="left:96%;bottom:0%;--dur:6s;--delay:-3.5s"></span>
   </div>
-  <div class="ottoSplashInner">
-    <div class="ottoEnergy"><div class="ottoCore">ϟ</div></div>
-    <div class="ottoKicker">Tecnologia de monitoramento</div>
-    <div class="ottoTitle">Sistema <span>OTTO</span></div>
-    <p class="ottoSubtitle">Monitoramento de usinas</p>
-    <div class="ottoLine"></div>
-    <div class="ottoStatus"><span class="ottoStatusDot"></span> Inicializando central de energia</div>
-  </div>
+  <div class="ottoSplashInner"><div class="ottoEnergy"><div class="ottoCore">ϟ</div></div><div class="ottoKicker">Tecnologia de monitoramento</div><div class="ottoTitle">Sistema <span>OTTO</span></div><p class="ottoSubtitle">Monitoramento de usinas</p><div class="ottoLine"></div><div class="ottoStatus"><span class="ottoStatusDot"></span> Inicializando central de energia</div></div>
 </div>
 
-
 <section id="loginView" class="login">
-  <div class="loginCard">
-    <div class="brandIcon">☀</div>
-    <div class="eyebrow">MONITORAMENTO DE USINAS</div>
-    <h1>Sistema OTTO</h1>
-    <p class="muted">Acesse o painel de monitoramento das usinas.</p>
-    <form id="loginForm">
-      <div class="field"><label>Usuário</label><input id="loginUser" autocomplete="username" value="admin"></div>
-      <div class="field"><label>Senha</label><input id="loginPass" type="password" autocomplete="current-password"></div>
-      <button class="btn primary full" type="submit">Entrar</button>
-      <div id="loginError" class="errorBox hidden"></div>
-    </form>
-  </div>
+  <div class="loginCard"><div class="brandIcon">☀</div><div class="eyebrow">MONITORAMENTO DE USINAS</div><h1>Sistema OTTO</h1><p class="muted">Acesse o painel de monitoramento das usinas.</p><form id="loginForm"><div class="field"><label>Usuário</label><input id="loginUser" autocomplete="username" value="admin"></div><div class="field"><label>Senha</label><input id="loginPass" type="password" autocomplete="current-password"></div><button class="btn primary full" type="submit">Entrar</button><div id="loginError" class="errorBox hidden"></div></form></div>
 </section>
 
 <section id="appView" class="shell hidden">
   <main class="main">
-    <header class="header">
-      <div class="headerBrand">
-        <div class="brandIcon">☀</div>
-        <div><strong>Sistema OTTO</strong><small>MONITORAMENTO DE USINAS</small></div>
-      </div>
-      <button id="logoutBtn" class="logout">Sair</button>
-    </header>
-
-    <section class="hero">
-      <div class="heroTop">
-        <div>
-          <div style="font-size:10px;font-weight:900;letter-spacing:.16em;color:rgba(255,255,255,.72)">DASHBOARD DE PRODUÇÃO</div>
-          <h1>Visão geral das usinas</h1>
-          <p>Produção consolidada de todas as plataformas conectadas.</p>
-        </div>
-        <div id="periodLabel" class="periodPill">—</div>
-      </div>
-    </section>
-
-    <section class="summary">
-      <article class="summaryCard primary"><small>Produção no mês</small><strong id="stMonth">—</strong><span>soma das usinas</span></article>
-      <article class="summaryCard primary"><small>Média por dia</small><strong id="stDailyAvg">—</strong><span>produção mensal ÷ dias decorridos</span></article>
-      <article class="summaryCard"><small>Produção hoje</small><strong id="stToday">—</strong><span>soma disponível hoje</span></article>
-      <article class="summaryCard"><small>Potência agora</small><strong id="stPower">—</strong><span>potência instantânea total</span></article>
-    </section>
-
+    <header class="header"><div class="headerBrand"><div class="brandIcon">☀</div><div><strong>Sistema OTTO</strong><small>MONITORAMENTO DE USINAS</small></div></div><button id="logoutBtn" class="logout">Sair</button></header>
+    <section class="hero"><div class="heroTop"><div><div style="font-size:10px;font-weight:900;letter-spacing:.16em;color:rgba(255,255,255,.72)">DASHBOARD DE PRODUÇÃO</div><h1>Visão geral das usinas</h1><p>Produção consolidada de todas as plataformas conectadas.</p></div><div id="periodLabel" class="periodPill">—</div></div></section>
+    <section class="summary"><article class="summaryCard primary"><small>Produção no mês</small><strong id="stMonth">—</strong><span>soma das usinas</span></article><article class="summaryCard primary"><small>Média por dia</small><strong id="stDailyAvg">—</strong><span>produção mensal ÷ dias decorridos</span></article><article class="summaryCard"><small>Produção hoje</small><strong id="stToday">—</strong><span>soma disponível hoje</span></article><article class="summaryCard"><small>Potência agora</small><strong id="stPower">—</strong><span>potência instantânea total</span></article></section>
     <section id="platforms" class="apps"></section>
   </main>
 </section>
 
 <script>
 const APPS=[
-  {id:'isolarcloud',env:'ISOLARCLOUD',name:'iSolarCloud',maker:'Sungrow',icon:'/assets/isolarcloud.png'},
-  {id:'shinephone',env:'SHINEPHONE',name:'ShinePhone',maker:'Growatt',icon:'/assets/shinephone.png'},
-  {id:'elekeeper',env:'ELEKEEPER',name:'elekeeper',maker:'SAJ Electric',icon:'/assets/elekeeper.png'},
-  {id:'solarman',env:'SOLARMAN',name:'SOLARMAN Smart',maker:'IGEN Tech',icon:'/assets/solarman.png'}
+{id:'isolarcloud',env:'ISOLARCLOUD',name:'iSolarCloud',maker:'Sungrow',icon:'/assets/isolarcloud.png'},
+{id:'shinephone',env:'SHINEPHONE',name:'ShinePhone',maker:'Growatt',icon:'/assets/shinephone.png'},
+{id:'elekeeper',env:'ELEKEEPER',name:'elekeeper',maker:'SAJ Electric',icon:'/assets/elekeeper.png'},
+{id:'solarman',env:'SOLARMAN',name:'SOLARMAN Smart',maker:'IGEN Tech',icon:'/assets/solarman.png'}
 ];
-
 const S={credentials:[],data:new Map(),user:null};
 const $=id=>document.getElementById(id);
-const E={
-  loginView:$('loginView'),appView:$('appView'),loginForm:$('loginForm'),
-  loginUser:$('loginUser'),loginPass:$('loginPass'),loginError:$('loginError'),
-  platforms:$('platforms'),stMonth:$('stMonth'),stDailyAvg:$('stDailyAvg'),
-  stToday:$('stToday'),stPower:$('stPower'),periodLabel:$('periodLabel')
-};
-
+const E={loginView:$('loginView'),appView:$('appView'),loginForm:$('loginForm'),loginUser:$('loginUser'),loginPass:$('loginPass'),loginError:$('loginError'),platforms:$('platforms'),stMonth:$('stMonth'),stDailyAvg:$('stDailyAvg'),stToday:$('stToday'),stPower:$('stPower'),periodLabel:$('periodLabel')};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const key=i=>i.app_id+':'+i.slot;
+function n(v){if(v===null||v===undefined||v==='')return null;const x=Number(v);return Number.isFinite(x)?x:null}
+function fmt(v,u){const x=n(v);if(x===null)return '—';return new Intl.NumberFormat('pt-BR',{maximumFractionDigits:2}).format(x)+' '+u}
+function monthName(){return new Intl.DateTimeFormat('pt-BR',{month:'long',year:'numeric'}).format(new Date())}
+async function api(path,opt={}){const r=await fetch('/api/'+path,{headers:{'content-type':'application/json',...(opt.headers||{})},credentials:'same-origin',...opt});let d={};try{d=await r.json()}catch{}if(!r.ok){const e=new Error(d.error||('Erro HTTP '+r.status));e.status=r.status;e.data=d;throw e}return d}
 
-async function api(path,opt={}){
-  const r=await fetch('/api/'+path,{headers:{'content-type':'application/json',...(opt.headers||{})},credentials:'same-origin',...opt});
-  let d={}; try{d=await r.json()}catch{}
-  if(!r.ok){const e=new Error(d.error||('Erro HTTP '+r.status));e.status=r.status;e.data=d;throw e}
-  return d;
-}
-
-function fmt(v,u){
-  if(v===null||v===undefined||!Number.isFinite(Number(v)))return '—';
-  return new Intl.NumberFormat('pt-BR',{maximumFractionDigits:2}).format(Number(v))+' '+u;
-}
-function number(v){const n=Number(v);return Number.isFinite(n)?n:null}
-function monthName(){
-  return new Intl.DateTimeFormat('pt-BR',{month:'long',year:'numeric'}).format(new Date());
-}
-
-async function init(){
-  E.periodLabel.textContent=monthName();
-  bind();
-  try{
-    const m=await api('me');
-    if(m.authenticated){S.user=m.user;showApp();await loadCredentials();await refreshAllData();}
-    else showLogin();
-  }catch{showLogin()}
-}
-
-function bind(){
-  E.loginForm.onsubmit=login;
-  $('logoutBtn').onclick=logout;
-}
+async function init(){E.periodLabel.textContent=monthName();bind();try{const m=await api('me');if(m.authenticated){S.user=m.user;showApp();await loadCredentials();refreshAllData()}else showLogin()}catch{showLogin()}}
+function bind(){E.loginForm.onsubmit=login;$('logoutBtn').onclick=logout}
 function showLogin(){E.appView.classList.add('hidden');E.loginView.classList.remove('hidden')}
 function showApp(){E.loginView.classList.add('hidden');E.appView.classList.remove('hidden')}
+async function login(e){e.preventDefault();E.loginError.classList.add('hidden');try{const d=await api('login',{method:'POST',body:JSON.stringify({username:E.loginUser.value,password:E.loginPass.value})});S.user=d.user;showApp();await loadCredentials();refreshAllData()}catch(err){E.loginError.textContent=err.message;E.loginError.classList.remove('hidden')}}
+async function logout(){try{await api('logout',{method:'POST',body:'{}'})}catch{}location.reload()}
 
-async function login(e){
-  e.preventDefault();
-  E.loginError.classList.add('hidden');
-  try{
-    const d=await api('login',{method:'POST',body:JSON.stringify({username:E.loginUser.value,password:E.loginPass.value})});
-    S.user=d.user;showApp();await loadCredentials();await refreshAllData();
-  }catch(err){E.loginError.textContent=err.message;E.loginError.classList.remove('hidden')}
-}
-async function logout(){try{await api('logout',{method:'POST',body:'{}'})}catch{} location.reload()}
-
-async function loadCredentials(){
-  try{
-    const d=await api('credentials');
-    S.credentials=(d.items||[]).filter(x=>x.integration_ready);
-    render();
-  }catch(e){if(e.status===401)showLogin();else render()}
-}
-
-async function refreshAllData(){
-  const ready=S.credentials;
-  ready.forEach(i=>S.data.set(key(i),{loading:true}));
-  render();
-  await Promise.allSettled(ready.map(i=>loadData(i)));
-  calcStats();
-  render();
-}
-
-async function loadData(i){
-  try{
-    const d=await api(`${i.app_id}?slot=${i.slot}`);
-    S.data.set(key(i),{ok:true,...d});
-  }catch(e){
-    S.data.set(key(i),{ok:false,error:e.message});
-  }
-}
-
-function allPlants(){
-  const list=[];
-  for(const i of S.credentials){
-    const d=S.data.get(key(i));
-    if(!d?.ok)continue;
-    const plants=d.plants||d.data?.plants||[];
-    for(const p of plants) list.push({...p,_app:i.app_id,_label:i.label,_company:i.company,_slot:i.slot});
-  }
-  return list;
-}
-
-function calcStats(){
-  const plants=allPlants();
-  let month=0,monthCount=0,today=0,todayCount=0,power=0,powerCount=0;
-  for(const p of plants){
-    const m=number(p.month_kwh); if(m!==null){month+=m;monthCount++}
-    const t=number(p.today_kwh); if(t!==null){today+=t;todayCount++}
-    const w=number(p.power_kw); if(w!==null){power+=w;powerCount++}
-  }
-  const day=Math.max(1,new Date().getDate());
-  E.stMonth.textContent=monthCount?fmt(month,'kWh'):'—';
-  E.stDailyAvg.textContent=monthCount?fmt(month/day,'kWh/dia'):'—';
-  E.stToday.textContent=todayCount?fmt(today,'kWh'):'—';
-  E.stPower.textContent=powerCount?fmt(power,'kW'):'—';
-}
-
-function render(){
-  E.platforms.innerHTML=APPS.map(platformHtml).join('');
-}
-
-function platformHtml(app){
-  const creds=S.credentials.filter(x=>x.app_id===app.id);
-  if(!creds.length) return '';
-
-  let loading=false;
-  let errors=[];
-  let plants=[];
-
-  for(const i of creds){
-    const d=S.data.get(key(i));
-    if(!d || d.loading){loading=true;continue}
-    if(!d.ok){errors.push(d.error||'Integração indisponível');continue}
-    const found=d.plants||d.data?.plants||[];
-    plants.push(...found.map(p=>({...p,_label:i.label,_company:i.company,_slot:i.slot})));
-  }
-
-  let body='';
-  if(plants.length){
-    body=`<div class="plantGrid">${plants.map(p=>plantHtml(p)).join('')}</div>`;
-  }else if(loading){
-    body=`<div class="loading">Carregando usinas do ${esc(app.name)}…<div class="loadingBar"><span></span></div></div>`;
-  }else if(errors.length){
-    body=`<div class="error">Não foi possível carregar as usinas desta plataforma.</div>`;
-  }else{
-    body=`<div class="empty">Nenhuma usina encontrada nesta plataforma.</div>`;
-  }
-
-  return `<article class="platform">
-    <div class="platformHead">
-      <div class="platformId">
-        <img src="${app.icon}" alt="${esc(app.name)}" onerror="this.style.display='none'">
-        <div><h2>${esc(app.name)}</h2><p>${esc(app.maker)} • ${plants.length} usina${plants.length===1?'':'s'}</p></div>
-      </div>
-      <span class="appBadge">Conectado</span>
-    </div>
-    ${body}
-  </article>`;
-}
-
-function plantHtml(p){
-  const month=number(p.month_kwh);
-  const avg=month!==null?month/Math.max(1,new Date().getDate()):null;
-  const status=String(p.status||'unknown').toLowerCase();
-  const dot=status==='online'?'ok':status==='alarm'?'bad':'wait';
-  const location=[p.city,p.country].filter(Boolean).join(' • ') || p._company || p._label || '';
-
-  return `<article class="plant">
-    <div class="plantTitle">
-      <div class="plantTitleText">
-        <strong title="${esc(p.name||'Usina')}">${esc(p.name||'Usina')}</strong>
-        <small title="${esc(location)}">${esc(location||'Monitoramento ativo')}</small>
-      </div>
-      <span class="statusPill"><span class="dot ${dot}"></span>${esc(status)}</span>
-    </div>
-    <div class="metricGrid">
-      <div class="metric"><small>Potência agora</small><b>${fmt(number(p.power_kw),'kW')}</b></div>
-      <div class="metric"><small>Hoje</small><b>${fmt(number(p.today_kwh),'kWh')}</b></div>
-      <div class="metric emphasis"><small>Mês</small><b>${fmt(month,'kWh')}</b></div>
-      <div class="metric emphasis"><small>Média/dia</small><b>${avg===null?'—':fmt(avg,'kWh')}</b></div>
-      <div class="metric"><small>Ano</small><b>${fmt(number(p.year_kwh),'kWh')}</b></div>
-      <div class="metric"><small>Total</small><b>${fmt(number(p.total_kwh),'kWh')}</b></div>
-    </div>
-  </article>`;
-}
-
-init();
-setInterval(()=>{if(!E.appView.classList.contains('hidden'))refreshAllData()},300000);
+async function loadCredentials(){try{const d=await api('credentials');S.credentials=d.items||[];render()}catch(e){if(e.status===401)showLogin();else{S.credentials=[];render()}}}
+async function refreshAllData(){const ready=S.credentials.filter(x=>x.integration_ready);for(const i of ready)S.data.set(key(i),{loading:true});render();calcStats();await Promise.allSettled(ready.map(i=>loadData(i)));calcStats();render()}
+async function loadData(i){S.data.set(key(i),{loading:true});render();try{const d=await api(`${i.app_id}?slot=${i.slot}`);S.data.set(key(i),{ok:true,...d})}catch(e){S.data.set(key(i),{ok:false,error:e.message,code:e.data?.code,missing:e.data?.missing||[]})}render();calcStats()}
+function allPlants(){const list=[];for(const i of S.credentials){const d=S.data.get(key(i));if(!d?.ok)continue;const plants=d.plants||d.data?.plants||[];for(const p of plants)list.push({...p,_app:i.app_id,_label:i.label,_company:i.company,_slot:i.slot})}return list}
+function calcStats(){const plants=allPlants();let month=0,mc=0,today=0,tc=0,power=0,pc=0;for(const p of plants){const m=n(p.month_kwh);if(m!==null){month+=m;mc++}const t=n(p.today_kwh);if(t!==null){today+=t;tc++}const w=n(p.power_kw);if(w!==null){power+=w;pc++}}const day=Math.max(1,new Date().getDate());E.stMonth.textContent=mc?fmt(month,'kWh'):'—';E.stDailyAvg.textContent=mc?fmt(month/day,'kWh/dia'):'—';E.stToday.textContent=tc?fmt(today,'kWh'):'—';E.stPower.textContent=pc?fmt(power,'kW'):'—'}
+function render(){E.platforms.innerHTML=APPS.map(platformHtml).filter(Boolean).join('')}
+function platformHtml(app){const creds=S.credentials.filter(x=>x.app_id===app.id);if(!creds.length)return '';const ready=creds.filter(x=>x.integration_ready);let loading=false,plants=[],errorCount=0;for(const i of ready){const d=S.data.get(key(i));if(!d||d.loading){loading=true;continue}if(!d.ok){errorCount++;continue}const found=d.plants||d.data?.plants||[];plants.push(...found.map(p=>({...p,_label:i.label,_company:i.company,_slot:i.slot})))}let body='';if(plants.length)body=`<div class="plantGrid">${plants.map(plantHtml).join('')}</div>`;else if(loading)body=`<div class="loading">Carregando usinas do ${esc(app.name)}…<div class="loadingBar"><span></span></div></div>`;else if(!ready.length)body=`<div class="empty">Nenhuma usina conectada nesta plataforma.</div>`;else if(errorCount)body=`<div class="error">Não foi possível carregar as usinas desta plataforma agora.</div>`;else body=`<div class="empty">Nenhuma usina encontrada nesta plataforma.</div>`;return `<article class="platform"><div class="platformHead"><div class="platformId"><img src="${app.icon}" alt="${esc(app.name)}" onerror="this.style.display='none'"><div><h2>${esc(app.name)}</h2><p>${esc(app.maker)} • ${plants.length} usina${plants.length===1?'':'s'}</p></div></div>${ready.length?'<span class="appBadge">Conectado</span>':''}</div>${body}</article>`}
+function plantHtml(p){const month=n(p.month_kwh);const avg=month!==null?month/Math.max(1,new Date().getDate()):null;const status=String(p.status||'unknown').toLowerCase();const dot=status==='online'?'ok':status==='alarm'?'bad':'wait';const location=[p.city,p.country].filter(Boolean).join(' • ')||p._company||p._label||'';return `<article class="plant"><div class="plantTitle"><div class="plantTitleText"><strong title="${esc(p.name||'Usina')}">${esc(p.name||'Usina')}</strong><small title="${esc(location)}">${esc(location||'Monitoramento ativo')}</small></div><span class="statusPill"><span class="dot ${dot}"></span>${esc(status)}</span></div><div class="metricGrid"><div class="metric"><small>Potência agora</small><b>${fmt(p.power_kw,'kW')}</b></div><div class="metric"><small>Hoje</small><b>${fmt(p.today_kwh,'kWh')}</b></div><div class="metric emphasis"><small>Mês</small><b>${fmt(month,'kWh')}</b></div><div class="metric emphasis"><small>Média/dia</small><b>${avg===null?'—':fmt(avg,'kWh')}</b></div><div class="metric"><small>Ano</small><b>${fmt(p.year_kwh,'kWh')}</b></div><div class="metric"><small>Total</small><b>${fmt(p.total_kwh,'kWh')}</b></div></div></article>`}
+init();setInterval(()=>{if(!E.appView.classList.contains('hidden'))refreshAllData()},300000);
 </script>
-
 <script>
-(function(){
-  const splash=document.getElementById('ottoSplash');
-  if(!splash)return;
-  let closed=false;
-  const closeSplash=()=>{
-    if(closed)return;
-    closed=true;
-    splash.classList.add('hide');
-    setTimeout(()=>splash.remove(),850);
-  };
-  window.addEventListener('load',()=>setTimeout(closeSplash,2350),{once:true});
-  setTimeout(closeSplash,4200);
-})();
+(function(){const splash=document.getElementById('ottoSplash');if(!splash)return;let closed=false;const closeSplash=()=>{if(closed)return;closed=true;splash.classList.add('hide');setTimeout(()=>splash.remove(),850)};window.addEventListener('load',()=>setTimeout(closeSplash,2350),{once:true});setTimeout(closeSplash,4200)})();
 </script>
-
 </body>
 </html>
