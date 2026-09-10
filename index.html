@@ -11,6 +11,93 @@
 .stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-bottom:20px}.stat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:17px 18px;box-shadow:0 8px 24px rgba(26,65,43,.04)}.stat small{color:var(--muted);font-weight:700}.stat strong{display:block;font-size:25px;margin-top:5px}.stat em{font-style:normal;font-size:12px;color:var(--muted)}
 .toolbar{display:flex;gap:10px;align-items:center;margin:18px 0}.search{flex:1;min-width:220px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;outline:none}.platform{background:#fff;border:1px solid var(--line);border-radius:var(--r);margin:16px 0;overflow:hidden;box-shadow:0 10px 32px rgba(26,65,43,.04)}.platformHead{padding:15px 18px;display:flex;align-items:center;justify-content:space-between;gap:15px;border-bottom:1px solid var(--line)}.platformId{display:flex;align-items:center;gap:12px}.platformId img{width:48px;height:48px;border-radius:14px;object-fit:cover}.platformId h3{margin:0;font-size:19px}.platformId p{margin:2px 0 0;color:var(--muted);font-size:12px}.platformActions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.accessGrid{padding:15px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.access{border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,#fff,#fcfefc);padding:15px}.accessTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.accessTop small{font-size:10px;color:var(--green);font-weight:900;letter-spacing:.08em}.accessTop h4{margin:3px 0 0;font-size:17px}.slot{min-width:34px;height:34px;border-radius:10px;background:var(--greenSoft);color:var(--green);display:grid;place-items:center;font-weight:900}.metaGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:12px 0}.meta{background:#f8fbf9;border:1px solid #edf2ee;border-radius:10px;padding:8px;min-width:0}.meta small{display:block;color:var(--muted);font-size:10px}.meta strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.integration{border-top:1px solid var(--line);padding-top:12px;margin-top:10px}.integrationState{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:800}.loadingLine{height:5px;background:#eef3ef;border-radius:999px;overflow:hidden;margin:10px 0}.loadingLine span{display:block;height:100%;width:40%;background:linear-gradient(90deg,#9ce4b9,#24a967);animation:slide 1.2s infinite}@keyframes slide{from{transform:translateX(-120%)}to{transform:translateX(320%)}}.plantGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:10px}.plant{border:1px solid var(--line);border-radius:14px;padding:11px;background:#fff}.plantTitle{display:flex;justify-content:space-between;gap:8px}.plantTitle strong{font-size:13px}.metricGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}.metric{background:#f7faf8;border-radius:9px;padding:8px}.metric small{display:block;color:var(--muted);font-size:9px}.metric b{font-size:13px}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.empty{padding:34px;text-align:center;color:var(--muted)}.setup{background:var(--amberSoft);border:1px solid #f1dfb8;border-radius:12px;padding:10px 12px;color:#865d19;font-size:12px;margin-top:10px}.setup code{font-family:ui-monospace,monospace;font-size:11px}.toast{position:fixed;right:22px;bottom:22px;background:#17221c;color:#fff;padding:12px 15px;border-radius:12px;box-shadow:var(--shadow);z-index:70}.modalWrap{position:fixed;inset:0;background:rgba(26,39,31,.32);display:grid;place-items:center;padding:20px;z-index:60}.modal{width:min(760px,100%);max-height:86vh;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--shadow)}.modalHead{display:flex;justify-content:space-between;gap:15px;align-items:flex-start}.modal h2{margin:0}.close{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:#fff}.credGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}.cred{border:1px solid var(--line);border-radius:12px;padding:11px}.cred small{display:block;color:var(--muted);font-size:10px}.cred strong{word-break:break-all}.raw{white-space:pre-wrap;font:11px/1.5 ui-monospace,monospace;background:#f6f8f7;border:1px solid var(--line);border-radius:12px;padding:12px;max-height:300px;overflow:auto}
 @media(max-width:1150px){.stats{grid-template-columns:repeat(3,1fr)}.accessGrid{grid-template-columns:1fr}.plantGrid{grid-template-columns:1fr}}@media(max-width:760px){.sidebar{display:none}.main{margin:0;padding:18px}.top{display:block}.topActions{margin-top:12px}.stats{grid-template-columns:1fr 1fr}.metaGrid{grid-template-columns:1fr 1fr}.metricGrid{grid-template-columns:1fr 1fr}.platformHead{align-items:flex-start;flex-direction:column}.accessGrid{padding:10px}.credGrid{grid-template-columns:1fr}}
+
+/* ===== AJUSTE PARA TV / TELAS GRANDES =====
+   Em TVs, a interface deixa de crescer visualmente demais.
+   Mantém desktop, tablet e celular como já estavam.
+*/
+@media (min-width: 1800px){
+  .sidebar{
+    width:210px;
+    padding:18px 15px;
+  }
+  .main{
+    margin-left:210px;
+    padding:20px 24px 48px;
+    max-width:none;
+  }
+  .brand{gap:10px;padding:2px 6px 16px}
+  .brand .brandIcon{width:40px;height:40px;border-radius:12px;font-size:18px}
+  .brand strong{font-size:15px}
+  .brand small{font-size:10px}
+  .nav a{padding:10px;font-size:12px;margin:3px 0}
+  .userCard{padding:9px}
+  .top{margin-bottom:16px}
+  .top h1{font-size:25px}
+  .top .muted{font-size:12px}
+  .eyebrow{font-size:9px}
+  .btn{padding:9px 11px;font-size:12px;border-radius:11px}
+  .statusPill{padding:6px 8px;font-size:10px}
+  .stats{gap:10px;margin-bottom:14px}
+  .stat{border-radius:15px;padding:12px 14px}
+  .stat small{font-size:10px}
+  .stat strong{font-size:20px;margin-top:3px}
+  .stat em{font-size:10px}
+  .toolbar{margin:12px 0;gap:8px}
+  .search{padding:10px 12px;font-size:12px;border-radius:12px}
+  .platform{margin:12px 0;border-radius:18px}
+  .platformHead{padding:11px 14px}
+  .platformId{gap:9px}
+  .platformId img{width:38px;height:38px;border-radius:11px}
+  .platformId h3{font-size:16px}
+  .platformId p{font-size:10px}
+  .accessGrid{padding:11px;gap:10px}
+  .access{padding:11px;border-radius:14px}
+  .accessTop small{font-size:8px}
+  .accessTop h4{font-size:14px}
+  .slot{min-width:29px;height:29px;border-radius:8px;font-size:12px}
+  .metaGrid{gap:5px;margin:9px 0}
+  .meta{padding:6px;border-radius:8px}
+  .meta small{font-size:8px}
+  .meta strong{font-size:10px}
+  .integration{padding-top:9px;margin-top:8px}
+  .integrationState{font-size:10px}
+  .plantGrid{gap:7px;margin-top:8px}
+  .plant{padding:8px;border-radius:11px}
+  .plantTitle strong{font-size:11px}
+  .metricGrid{gap:5px;margin-top:7px}
+  .metric{padding:6px;border-radius:7px}
+  .metric small{font-size:8px}
+  .metric b{font-size:10px}
+  .actions{gap:5px;margin-top:9px}
+  .setup{padding:8px 10px;font-size:10px}
+  .setup code{font-size:9px}
+  #config{margin-top:18px!important}
+  #config .platformHead{padding:11px 14px}
+  #config .platformHead h3{font-size:16px}
+  #config .platformHead p{font-size:10px}
+  #config .platform>div:last-child{padding:13px!important;font-size:11px}
+  .modal{width:min(680px,92vw);max-height:82vh;border-radius:19px;padding:17px}
+  .modal h2{font-size:20px}
+  .close{width:32px;height:32px}
+  .credGrid{gap:8px;margin-top:11px}
+  .cred{padding:9px}
+  .cred small{font-size:9px}
+  .cred strong{font-size:11px}
+  .raw{font-size:9px;max-height:260px}
+  .toast{font-size:11px;padding:9px 12px}
+}
+@media (min-width: 2400px){
+  .main{
+    /* evita que os cartões virem gigantes em TVs 4K/ultrawide */
+    max-width:1900px;
+    margin-left:210px;
+    margin-right:auto;
+  }
+  .stats{grid-template-columns:repeat(5,minmax(180px,1fr))}
+  .accessGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
 </style>
 </head>
 <body>
