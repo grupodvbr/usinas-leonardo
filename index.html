@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f7faf8">
-<title>Solar Central • Usinas</title>
+<title>Sistema OTTO • Monitoramento de usinas</title>
 <style>
 :root{--bg:#f4f7f5;--paper:#fff;--paper2:#fbfdfc;--text:#16221b;--muted:#718078;--line:#dfe8e2;--green:#168b55;--green2:#25a968;--greenSoft:#eaf8f0;--amber:#b77712;--amberSoft:#fff7e6;--red:#bd4b4b;--redSoft:#fff0f0;--blue:#2778c7;--shadow:0 18px 55px rgba(22,55,37,.09);--r:22px}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(145deg,#f8fbf9 0,#f2f7f4 50%,#eef6f1 100%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}.hidden{display:none!important}
@@ -98,11 +98,329 @@
   .accessGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
+
+/* =========================================================
+   SISTEMA OTTO — ABERTURA PREMIUM
+   ========================================================= */
+.ottoSplash{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 42%,rgba(44,197,117,.19),transparent 27%),
+    radial-gradient(circle at 22% 18%,rgba(91,231,156,.10),transparent 25%),
+    linear-gradient(135deg,#07130d 0%,#0b1d13 48%,#061009 100%);
+  transition:opacity .75s ease,visibility .75s ease;
+}
+.ottoSplash.hide{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+.ottoSplash::before{
+  content:"";
+  position:absolute;
+  inset:-30%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 84px,
+      rgba(105,255,173,.035) 85px,
+      transparent 86px 170px
+    );
+  transform:perspective(900px) rotateX(68deg) translateY(18%);
+  transform-origin:center bottom;
+  animation:ottoGrid 8s linear infinite;
+  mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.85) 45%,#000 100%);
+}
+.ottoSplash::after{
+  content:"";
+  position:absolute;
+  width:44vw;
+  height:44vw;
+  min-width:520px;
+  min-height:520px;
+  border-radius:50%;
+  border:1px solid rgba(101,255,172,.10);
+  box-shadow:
+    0 0 0 70px rgba(63,212,130,.025),
+    0 0 0 140px rgba(63,212,130,.018),
+    0 0 130px rgba(29,221,117,.08);
+  animation:ottoOrbit 7s ease-in-out infinite;
+}
+@keyframes ottoGrid{
+  from{transform:perspective(900px) rotateX(68deg) translateY(18%) translateX(0)}
+  to{transform:perspective(900px) rotateX(68deg) translateY(18%) translateX(170px)}
+}
+@keyframes ottoOrbit{
+  0%,100%{transform:scale(.94) rotate(0deg);opacity:.65}
+  50%{transform:scale(1.03) rotate(9deg);opacity:1}
+}
+.ottoSplashInner{
+  position:relative;
+  z-index:2;
+  width:min(920px,90vw);
+  text-align:center;
+}
+.ottoEnergy{
+  width:90px;
+  height:90px;
+  margin:0 auto 24px;
+  position:relative;
+  display:grid;
+  place-items:center;
+}
+.ottoEnergy::before,
+.ottoEnergy::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  border:1px solid rgba(104,255,175,.34);
+  animation:ottoPulse 2.4s ease-out infinite;
+}
+.ottoEnergy::after{animation-delay:1.2s}
+@keyframes ottoPulse{
+  0%{transform:scale(.52);opacity:0}
+  35%{opacity:1}
+  100%{transform:scale(1.5);opacity:0}
+}
+.ottoCore{
+  width:62px;
+  height:62px;
+  border-radius:20px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(145deg,rgba(58,235,142,.24),rgba(20,127,76,.18));
+  border:1px solid rgba(120,255,184,.38);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.16),
+    0 15px 50px rgba(28,217,116,.22);
+  color:#8fffc0;
+  font-size:28px;
+  animation:ottoCoreFloat 3s ease-in-out infinite;
+}
+@keyframes ottoCoreFloat{
+  0%,100%{transform:translateY(0) rotate(-2deg)}
+  50%{transform:translateY(-7px) rotate(2deg)}
+}
+.ottoKicker{
+  color:#70eaa7;
+  font-weight:850;
+  font-size:11px;
+  letter-spacing:.36em;
+  text-transform:uppercase;
+  opacity:0;
+  transform:translateY(12px);
+  animation:ottoReveal .7s .15s forwards;
+}
+.ottoTitle{
+  margin:12px 0 8px;
+  color:#f3fff8;
+  font-size:clamp(46px,7vw,104px);
+  line-height:.96;
+  letter-spacing:-.065em;
+  font-weight:900;
+  opacity:0;
+  transform:translateY(22px) scale(.97);
+  animation:ottoReveal .85s .32s cubic-bezier(.2,.75,.2,1) forwards;
+  text-shadow:0 18px 60px rgba(0,0,0,.34);
+}
+.ottoTitle span{
+  color:#57e798;
+  text-shadow:0 0 42px rgba(72,239,150,.28);
+}
+.ottoSubtitle{
+  margin:0;
+  color:#c5d8cd;
+  font-size:clamp(16px,2vw,24px);
+  font-weight:560;
+  letter-spacing:.01em;
+  opacity:0;
+  transform:translateY(18px);
+  animation:ottoReveal .8s .54s forwards;
+}
+@keyframes ottoReveal{
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.ottoLine{
+  width:min(410px,70vw);
+  height:1px;
+  margin:30px auto 19px;
+  overflow:hidden;
+  background:rgba(161,255,204,.10);
+  position:relative;
+}
+.ottoLine::after{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:36%;
+  background:linear-gradient(90deg,transparent,#61efa2,transparent);
+  animation:ottoScan 1.45s ease-in-out infinite;
+}
+@keyframes ottoScan{
+  from{transform:translateX(-120%)}
+  to{transform:translateX(390%)}
+}
+.ottoStatus{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  color:#8fa99a;
+  font-size:11px;
+  font-weight:750;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  opacity:0;
+  animation:ottoReveal .7s .8s forwards;
+}
+.ottoStatusDot{
+  width:7px;height:7px;border-radius:50%;
+  background:#56e794;
+  box-shadow:0 0 18px #56e794;
+  animation:ottoBlink 1.5s ease-in-out infinite;
+}
+@keyframes ottoBlink{50%{opacity:.35;transform:scale(.75)}}
+.ottoParticles{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+.ottoParticle{
+  position:absolute;
+  width:3px;height:3px;border-radius:50%;
+  background:#79f5af;
+  box-shadow:0 0 14px rgba(91,245,160,.8);
+  opacity:.45;
+  animation:ottoParticleMove var(--dur) linear infinite;
+  animation-delay:var(--delay);
+}
+@keyframes ottoParticleMove{
+  from{transform:translateY(20vh) scale(.7);opacity:0}
+  12%{opacity:.5}
+  to{transform:translateY(-115vh) scale(1.15);opacity:0}
+}
+
+/* Identidade OTTO no painel */
+.brand strong{letter-spacing:-.02em}
+.brand small{font-weight:800}
+.login .brandIcon,
+.brand .brandIcon{
+  background:linear-gradient(135deg,#b8f5cf,#48d989);
+  color:#0c6940;
+  box-shadow:0 8px 24px rgba(37,169,104,.16);
+}
+.loginCard{
+  position:relative;
+  overflow:hidden;
+}
+.loginCard::before{
+  content:"";
+  position:absolute;
+  width:210px;height:210px;border-radius:50%;
+  right:-100px;top:-105px;
+  background:radial-gradient(circle,rgba(55,205,126,.13),transparent 68%);
+  pointer-events:none;
+}
+
+@media(max-width:760px){
+  .ottoEnergy{width:76px;height:76px;margin-bottom:20px}
+  .ottoCore{width:54px;height:54px;border-radius:18px;font-size:24px}
+  .ottoKicker{font-size:9px;letter-spacing:.28em}
+  .ottoLine{margin-top:24px}
+  .ottoStatus{font-size:9px;letter-spacing:.08em}
+}
+@media(prefers-reduced-motion:reduce){
+  .ottoSplash *,
+  .ottoSplash::before,
+  .ottoSplash::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+  }
+}
+
+
+/* =========================================================
+   TV 65" — VISUAL EQUIVALENTE A ZOOM 60%
+   Aplicado somente em telas grandes/TV.
+   O conteúdo usa 60% da escala visual e ocupa toda a tela
+   compensando largura/altura para não sobrar área inútil.
+   ========================================================= */
+@media (min-width: 1600px) and (min-height: 800px){
+  html,body{
+    width:100%;
+    min-height:100%;
+    overflow-x:hidden;
+  }
+
+  /* Login em escala de TV */
+  #loginView{
+    width:166.666667%;
+    min-height:166.666667vh;
+    transform:scale(.60);
+    transform-origin:top left;
+  }
+
+  /* Painel inteiro em escala de 60% */
+  #appView{
+    width:166.666667%;
+    min-height:166.666667vh;
+    transform:scale(.60);
+    transform-origin:top left;
+  }
+
+  /* A abertura OTTO deve preencher fisicamente a TV,
+     por isso compensamos a escala do pai quando necessário. */
+  .ottoSplash{
+    width:100vw;
+    height:100vh;
+  }
+
+  /* Em 65", permite mais informação lado a lado */
+  .main{
+    max-width:none;
+  }
+  .accessGrid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .plantGrid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+
+/* 4K / TVs muito largas: mantém densidade alta sem cards gigantes */
+@media (min-width: 3000px){
+  .accessGrid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  .stats{
+    grid-template-columns:repeat(5,minmax(0,1fr));
+  }
+}
+
 </style>
 </head>
 <body>
-<section id="loginView" class="login"><div class="loginCard"><div class="brandIcon">☀</div><div class="eyebrow" style="margin-top:18px">CENTRAL DE ENERGIA</div><h1>Solar Central</h1><p class="muted">Entre para acompanhar as usinas e seus dados no mesmo painel.</p><form id="loginForm"><div class="field"><label>Usuário</label><input id="loginUser" autocomplete="username" value="admin"></div><div class="field"><label>Senha</label><input id="loginPass" type="password" autocomplete="current-password"></div><button class="btn primary full" type="submit">Entrar na central</button><div id="loginError" class="errorBox hidden"></div></form></div></section>
-<section id="appView" class="shell hidden"><aside class="sidebar"><div class="brand"><div class="brandIcon">☀</div><div><strong>Solar Central</strong><small>USINAS & DADOS</small></div></div><nav class="nav"><a class="active" href="#visao">⌂ Visão geral</a><a href="#plataformas">▦ Plataformas</a><a href="#config">⚙ Configuração</a></nav><div class="userBox"><div class="userCard"><small>Usuário conectado</small><strong id="who">—</strong></div><button id="logoutBtn" class="btn secondary" style="margin-top:9px">Sair</button></div></aside>
+
+<div id="ottoSplash" class="ottoSplash" aria-label="Sistema OTTO - Monitoramento de usinas">
+  <div class="ottoParticles"><span class="ottoParticle" style="left:5%;bottom:3%;--dur:5s;--delay:-3.5s"></span><span class="ottoParticle" style="left:11%;bottom:13%;--dur:6s;--delay:-2.8s"></span><span class="ottoParticle" style="left:18%;bottom:30%;--dur:8s;--delay:-2.8s"></span><span class="ottoParticle" style="left:27%;bottom:29%;--dur:7s;--delay:-4.199999999999999s"></span><span class="ottoParticle" style="left:35%;bottom:21%;--dur:5s;--delay:-0.0s"></span><span class="ottoParticle" style="left:43%;bottom:13%;--dur:8s;--delay:-0.7s"></span><span class="ottoParticle" style="left:52%;bottom:12%;--dur:7s;--delay:-2.0999999999999996s"></span><span class="ottoParticle" style="left:61%;bottom:11%;--dur:6s;--delay:-3.5s"></span><span class="ottoParticle" style="left:69%;bottom:3%;--dur:9s;--delay:-4.199999999999999s"></span><span class="ottoParticle" style="left:77%;bottom:27%;--dur:7s;--delay:-0.0s"></span><span class="ottoParticle" style="left:84%;bottom:12%;--dur:9s;--delay:-0.0s"></span><span class="ottoParticle" style="left:92%;bottom:4%;--dur:7s;--delay:-0.7s"></span><span class="ottoParticle" style="left:96%;bottom:0%;--dur:6s;--delay:-3.5s"></span></div>
+  <div class="ottoSplashInner">
+    <div class="ottoEnergy"><div class="ottoCore">ϟ</div></div>
+    <div class="ottoKicker">Tecnologia de monitoramento</div>
+    <div class="ottoTitle">Sistema <span>OTTO</span></div>
+    <p class="ottoSubtitle">Monitoramento de usinas</p>
+    <div class="ottoLine"></div>
+    <div class="ottoStatus"><span class="ottoStatusDot"></span> Inicializando central de energia</div>
+  </div>
+</div>
+
+<section id="loginView" class="login"><div class="loginCard"><div class="brandIcon">☀</div><div class="eyebrow" style="margin-top:18px">MONITORAMENTO DE USINAS</div><h1>Sistema OTTO</h1><p class="muted">Entre para acompanhar suas usinas, integrações e indicadores em uma central única.</p><form id="loginForm"><div class="field"><label>Usuário</label><input id="loginUser" autocomplete="username" value="admin"></div><div class="field"><label>Senha</label><input id="loginPass" type="password" autocomplete="current-password"></div><button class="btn primary full" type="submit">Entrar na central</button><div id="loginError" class="errorBox hidden"></div></form></div></section>
+<section id="appView" class="shell hidden"><aside class="sidebar"><div class="brand"><div class="brandIcon">☀</div><div><strong>Sistema OTTO</strong><small>MONITORAMENTO DE USINAS</small></div></div><nav class="nav"><a class="active" href="#visao">⌂ Visão geral</a><a href="#plataformas">▦ Plataformas</a><a href="#config">⚙ Configuração</a></nav><div class="userBox"><div class="userCard"><small>Usuário conectado</small><strong id="who">—</strong></div><button id="logoutBtn" class="btn secondary" style="margin-top:9px">Sair</button></div></aside>
 <main class="main"><section id="visao"><div class="top"><div><div class="eyebrow">MONITORAMENTO UNIFICADO</div><h1>Visão geral das usinas</h1><p class="muted" style="margin:0">Dados consultados diretamente nas plataformas dos fabricantes.</p></div><div class="topActions"><span class="statusPill"><span class="dot ok"></span> Vercel online</span><button id="refreshAll" class="btn primary">↻ Atualizar tudo</button></div></div>
 <div class="stats"><div class="stat"><small>Acessos cadastrados</small><strong id="stAccess">0</strong><em>na Vercel</em></div><div class="stat"><small>Integrações prontas</small><strong id="stReady">0</strong><em>com dados</em></div><div class="stat"><small>Potência agora</small><strong id="stPower">—</strong><em>soma das usinas</em></div><div class="stat"><small>Geração hoje</small><strong id="stToday">—</strong><em>quando disponível</em></div><div class="stat"><small>Usinas online</small><strong id="stOnline">—</strong><em>status atual</em></div></div></section>
 <section id="plataformas"><div class="toolbar"><input id="search" class="search" placeholder="Buscar empresa, usina ou plataforma..."><button id="portalStatusBtn" class="btn secondary">● Status portais</button></div><div id="platforms"></div></section>
@@ -142,4 +460,18 @@ function plantHtml(p){return `<div class="plant"><div class="plantTitle"><strong
 async function revealCred(app,slot){try{const d=await api('reveal',{method:'POST',body:JSON.stringify({app_id:app,slot:Number(slot)})}),c=d.credential;$('credTitle').textContent=c.label;$('credCompany').textContent=c.company||'—';$('credPlant').textContent=c.plant||'—';$('credUser').textContent=c.user||'—';$('credPass').textContent=c.password||'—';E.credModal.classList.remove('hidden')}catch(e){toast(e.message,true)}}
 function openData(app,slot){const i=S.credentials.find(x=>x.app_id===app&&x.slot===Number(slot)),d=S.data.get(app+':'+slot);$('dataTitle').textContent=i?.label||'Detalhes';if(!d){$('dataContent').innerHTML='<p class="muted">Ainda não há consulta realizada.</p>'}else if(!d.ok){$('dataContent').innerHTML=`<div class="setup"><strong>${esc(d.error||'Integração indisponível')}</strong>${d.missing?.length?'<br>Faltando: '+d.missing.map(esc).join(', '):''}</div>`}else{const payload={source:d.source,checked_at:d.checked_at,plants:d.plants};$('dataContent').innerHTML=`<p class="muted">Fonte: ${esc(d.source||'—')} • Atualizado: ${esc(d.checked_at||'—')}</p><pre class="raw">${esc(JSON.stringify(payload,null,2))}</pre>`}E.dataModal.classList.remove('hidden')}
 init();setInterval(()=>{if(!E.appView.classList.contains('hidden'))refreshAllData()},300000);
-</script></body></html>
+</script>
+<script>
+(function(){
+  const splash=document.getElementById('ottoSplash');
+  if(!splash)return;
+  const closeSplash=()=>{
+    splash.classList.add('hide');
+    setTimeout(()=>splash.remove(),850);
+  };
+  window.addEventListener('load',()=>setTimeout(closeSplash,2350),{once:true});
+  setTimeout(closeSplash,4200);
+})();
+</script>
+
+</body></html>
