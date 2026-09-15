@@ -101,7 +101,50 @@ async function logout(){try{await api('logout',{method:'POST',body:'{}'})}catch{
 
 async function loadCredentials(){try{const d=await api('credentials');S.credentials=d.items||[];render()}catch(e){if(e.status===401)showLogin();else{S.credentials=[];render()}}}
 async function refreshAllData(){const ready=S.credentials.filter(x=>x.integration_ready);for(const i of ready)S.data.set(key(i),{loading:true});render();calcStats();await Promise.allSettled(ready.map(i=>loadData(i)));calcStats();render()}
-async function loadData(i){S.data.set(key(i),{loading:true});render();try{const d=await api(`${i.app_id}?slot=${i.slot}`);S.data.set(key(i),{ok:true,...d})}catch(e){S.data.set(key(i),{ok:false,error:e.message,code:e.data?.code,missing:e.data?.missing||[]})}render();calcStats()}
+async function sendOfflineAlertsFromPanel(i,d){
+  const plants=d?.plants||d?.data?.plants||[];
+  for(const p of plants){
+    const status=String(p?.status||'unknown').trim().toLowerCase();
+    if(status!=='offline') continue;
+
+    const stationId=p?.id??p?.plant_id??p?.station_id??p?.ps_id??p?.sn??p?.device_sn??null;
+    const stationName=String(p?.name??p?.plant_name??p?.station_name??p?.ps_name??i?.plant??'').trim();
+    if(!stationName) continue;
+
+    // Evita repetir o mesmo alerta a cada atualização do painel.
+    // Após 30 minutos, se continuar offline, pode alertar novamente.
+    const alertKey=`otto_alert:${i.app_id}:${i.slot}:${stationId||stationName}:offline`;
+    const last=Number(localStorage.getItem(alertKey)||0);
+    if(Date.now()-last < 30*60*1000) continue;
+
+    const payload={
+      provider:i.app_id,
+      station_id:stationId,
+      station_name:stationName,
+      status:'offline',
+      company:i.company||'',
+      label:i.label||'',
+      slot:i.slot??null,
+      checked_at:d?.checked_at||new Date().toISOString()
+    };
+
+    try{
+      // /api/alerta deve aceitar a sessão solar_session do usuário logado.
+      // NUNCA coloque ALERTA_INTERNAL_SECRET no HTML.
+      const result=await api('alerta',{method:'POST',body:JSON.stringify(payload)});
+      if(result?.whatsapp_enviado===true || result?.alerta_disparado===true){
+        localStorage.setItem(alertKey,String(Date.now()));
+        console.warn('[OTTO ALERTA] offline enviado',payload,result);
+      }else{
+        console.warn('[OTTO ALERTA] recebido, mas não disparado',payload,result);
+      }
+    }catch(err){
+      console.error('[OTTO ALERTA] falha ao chamar /api/alerta',payload,err);
+    }
+  }
+}
+
+async function loadData(i){S.data.set(key(i),{loading:true});render();try{const d=await api(`${i.app_id}?slot=${i.slot}`);S.data.set(key(i),{ok:true,...d});await sendOfflineAlertsFromPanel(i,d)}catch(e){S.data.set(key(i),{ok:false,error:e.message,code:e.data?.code,missing:e.data?.missing||[]})}render();calcStats()}
 function allPlants(){const list=[];for(const i of S.credentials){const d=S.data.get(key(i));if(!d?.ok)continue;const plants=d.plants||d.data?.plants||[];for(const p of plants)list.push({...p,_app:i.app_id,_label:i.label,_company:i.company,_slot:i.slot})}return list}
 function calcStats(){const plants=allPlants();let month=0,mc=0,today=0,tc=0,power=0,pc=0;for(const p of plants){const m=n(p.month_kwh);if(m!==null){month+=m;mc++}const t=n(p.today_kwh);if(t!==null){today+=t;tc++}const w=n(p.power_kw);if(w!==null){power+=w;pc++}}const day=Math.max(1,new Date().getDate());E.stMonth.textContent=mc?fmt(month,'kWh'):'—';E.stDailyAvg.textContent=mc?fmt(month/day,'kWh/dia'):'—';E.stToday.textContent=tc?fmt(today,'kWh'):'—';E.stPower.textContent=pc?fmt(power,'kW'):'—'}
 function render(){E.platforms.innerHTML=APPS.map(platformHtml).filter(Boolean).join('')}
