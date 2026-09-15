@@ -469,7 +469,7 @@ function isAuthorized(
 
   /*
    * Também permite Bearer CRON_SECRET,
-   * padrão da Vercel.
+   * padrão da Vercel.if (!isAuthorized(request))
    */
 
   const expected =
@@ -1420,31 +1420,6 @@ export default {
     }
 
 
-    /* =====================================================
-       AUTORIZAÇÃO
-       ===================================================== */
-
-    if (
-      !isAuthorized(
-        request
-      )
-    ) {
-
-      console.warn(
-        '[OTTO MONITOR] chamada não autorizada'
-      );
-
-      return responseJson(
-        {
-          ok: false,
-          error:
-            'Não autorizado.',
-          hint:
-            'Configure MONITOR_SECRET ou CRON_SECRET.'
-        },
-        401
-      );
-    }
 
 
     const checkedAt =
