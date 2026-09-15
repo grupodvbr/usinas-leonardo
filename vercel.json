@@ -1,11 +1,36 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "functions": { "api/*.mjs": { "maxDuration": 60 } },
+
+  "functions": {
+    "api/*.mjs": {
+      "maxDuration": 60
+    }
+  },
+
+  "crons": [
+    {
+      "path": "/api/monitor",
+      "schedule": "*/30 * * * *"
+    }
+  ],
+
   "headers": [
-    { "source": "/(.*)", "headers": [
-      { "key": "X-Content-Type-Options", "value": "nosniff" },
-      { "key": "Referrer-Policy", "value": "same-origin" },
-      { "key": "X-Frame-Options", "value": "DENY" }
-    ]}
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        }
+      ]
+    }
   ]
 }
