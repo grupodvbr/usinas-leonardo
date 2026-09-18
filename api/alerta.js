@@ -101,6 +101,31 @@ const TIMEZONE =
 
 
 // ======================================================
+// HORÁRIO PERMITIDO PARA ALERTAS
+// ======================================================
+//
+// A API pode continuar sendo chamada 24h por dia, porém
+// o WhatsApp só será disparado durante o período diurno.
+//
+// Regra atual:
+// - inicia às 06:00
+// - encerra às 18:00
+// - 18:00 em diante NÃO envia
+//
+// Se quiser alterar sem mexer no código, configure na Vercel:
+// ALERTA_HORA_INICIO=6
+// ALERTA_HORA_FIM=18
+//
+// ======================================================
+
+const ALERT_START_HOUR =
+  Number(process.env.ALERTA_HORA_INICIO || 6);
+
+const ALERT_END_HOUR =
+  Number(process.env.ALERTA_HORA_FIM || 18);
+
+
+// ======================================================
 // NÚMEROS QUE RECEBERÃO
 // ======================================================
 
@@ -426,6 +451,100 @@ function formatDateTime(
       .toISOString();
 
   }
+
+}
+
+
+// ======================================================
+// HORA ATUAL NO FUSO DA BAHIA
+// ======================================================
+
+function getCurrentHourInTimezone(){
+
+  try{
+
+    const hour =
+      new Intl.DateTimeFormat(
+        "en-US",
+        {
+          timeZone: TIMEZONE,
+          hour: "2-digit",
+          hour12: false
+        }
+      ).format(
+        new Date()
+      );
+
+    const parsed =
+      Number(
+        hour
+      );
+
+    if(
+      Number.isInteger(parsed) &&
+      parsed >= 0 &&
+      parsed <= 23
+    ){
+
+      return parsed;
+
+    }
+
+  }catch(error){
+
+    console.error(
+      "[SOLAR ALERTA] ERRO AO LER HORÁRIO LOCAL",
+      error?.message || error
+    );
+
+  }
+
+  // Em caso extremamente improvável de erro no Intl,
+  // bloqueia o disparo por segurança em vez de enviar à noite.
+  return null;
+
+}
+
+
+// ======================================================
+// VERIFICA SE ESTÁ NO PERÍODO DIURNO
+// ======================================================
+
+function isAlertTimeAllowed(){
+
+  const hour =
+    getCurrentHourInTimezone();
+
+  if(
+    hour === null
+  ){
+
+    return {
+      allowed: false,
+      hour: null,
+      timezone: TIMEZONE,
+      start_hour: ALERT_START_HOUR,
+      end_hour: ALERT_END_HOUR,
+      reason: "NÃO FOI POSSÍVEL DETERMINAR O HORÁRIO LOCAL"
+    };
+
+  }
+
+  const allowed =
+    hour >= ALERT_START_HOUR &&
+    hour < ALERT_END_HOUR;
+
+  return {
+    allowed,
+    hour,
+    timezone: TIMEZONE,
+    start_hour: ALERT_START_HOUR,
+    end_hour: ALERT_END_HOUR,
+    reason:
+      allowed
+        ? "HORÁRIO PERMITIDO"
+        : "FORA DO HORÁRIO DE ALERTA"
+  };
 
 }
 
@@ -1173,6 +1292,63 @@ export default {
 
           motivo:
             "STATUS NÃO CONFIGURADO PARA DISPARAR ALERTA",
+
+          alerta
+
+        });
+
+      }
+
+
+      // ==================================================
+      // FORA DO HORÁRIO DIURNO
+      // ==================================================
+      //
+      // Só chega aqui quando o status realmente exigiria
+      // alerta (atualmente: offline).
+      //
+      // Das 18:00 até 05:59 a API NÃO envia WhatsApp.
+      // Ela apenas confirma que recebeu o evento.
+      //
+      // ==================================================
+
+      const alertTime =
+        isAlertTimeAllowed();
+
+
+      if(
+        !alertTime.allowed
+      ){
+
+        console.log(
+          "[SOLAR ALERTA] BLOQUEADO POR HORÁRIO",
+          JSON.stringify({
+            station_name: stationName,
+            status,
+            ...alertTime
+          })
+        );
+
+
+        return responseJson({
+
+          ok:
+            true,
+
+          alerta_recebido:
+            true,
+
+          alerta_disparado:
+            false,
+
+          whatsapp_enviado:
+            false,
+
+          motivo:
+            "ALERTA BLOQUEADO FORA DO HORÁRIO DIURNO",
+
+          horario_alerta:
+            alertTime,
 
           alerta
 
