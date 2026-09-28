@@ -7,6 +7,10 @@ import {
   getProviderData
 } from '../lib/connectors/index.mjs';
 
+import {
+  saveMonitorToGas
+} from '../lib/gas-storage.mjs';
+
 
 /* =========================================================
    OTTO SOLAR • MONITOR AUTOMÁTICO
@@ -1241,6 +1245,38 @@ async function monitorCredential(
         plant?.month_kwh ??
         null,
 
+      year_kwh:
+        plant?.year_kwh ??
+        null,
+
+      total_kwh:
+        plant?.total_kwh ??
+        null,
+
+      capacity_kw:
+        plant?.capacity_kw ??
+        null,
+
+      revenue_today_brl:
+        plant?.revenue_today_brl ??
+        null,
+
+      revenue_month_brl:
+        plant?.revenue_month_brl ??
+        null,
+
+      revenue_year_brl:
+        plant?.revenue_year_brl ??
+        null,
+
+      revenue_total_brl:
+        plant?.revenue_total_brl ??
+        null,
+
+      updated_at:
+        plant?.updated_at ??
+        null,
+
       total_devices:
         plant?.total_devices ??
         null,
@@ -1700,6 +1736,39 @@ export default {
 
 
     /* =====================================================
+       PERSISTÊNCIA HISTÓRICA NO GOOGLE SHEETS
+       =====================================================
+       Falha ao salvar NÃO derruba o monitor nem os alertas.
+       ===================================================== */
+
+    const storage =
+      await saveMonitorToGas({
+        checkedAt,
+        results,
+        summary: {
+          integrations_total: credentials.length,
+          integrations_ok: integrationsOk,
+          integrations_failed: integrationsFailed,
+          plants_total: allPlants.length,
+          plants_online: online.length,
+          plants_offline: offline.length,
+          plants_alarm: alarm.length,
+          alerts_attempted: allAlerts.length,
+          alerts_sent: alertsSent.length,
+          alerts_failed: alertsFailed.length,
+          duration_ms: duration
+        }
+      });
+
+    if (storage?.ok !== true && storage?.skipped !== true) {
+      console.error(
+        '[OTTO MONITOR] ERRO SALVANDO NO GAS',
+        JSON.stringify(storage)
+      );
+    }
+
+
+    /* =====================================================
        RETORNO
        ===================================================== */
 
@@ -1723,6 +1792,8 @@ export default {
 
       timezone:
         TIMEZONE,
+
+      storage,
 
       duration_ms:
         duration,

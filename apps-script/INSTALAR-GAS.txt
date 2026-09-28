@@ -1,0 +1,100 @@
+OTTO SOLAR — INSTALAÇÃO DO GOOGLE APPS SCRIPT
+==============================================
+
+OBJETIVO
+--------
+Receber os dados coletados pelo /api/monitor da Vercel a cada 30 minutos e salvar na planilha.
+O painel atual e os alertas continuam funcionando normalmente.
+
+1) ABRA A PLANILHA DE DESTINO
+-----------------------------
+Na planilha onde os dados das usinas devem ficar:
+Extensões > Apps Script.
+
+2) COLE OS ARQUIVOS
+-------------------
+- Cole apps-script/Code.gs no Code.gs do projeto.
+- O arquivo appsscript.json é o manifesto. No Apps Script, em Configurações do projeto,
+  habilite "Mostrar o arquivo de manifesto appsscript.json no editor" e substitua pelo conteúdo fornecido.
+
+3) CONFIGURE A PLANILHA
+-----------------------
+No editor do Apps Script, execute manualmente:
+
+  instalarOttoSolar()
+
+Autorize o Google quando solicitar.
+Essa função cria automaticamente:
+- USINAS_PRODUCAO  (histórico a cada 30 minutos)
+- USINAS_ATUAL     (último estado de cada usina)
+- USINAS_SYNC_LOG  (log das sincronizações)
+
+4) CONFIGURE O SEGREDO
+----------------------
+Ainda no editor, abra o Code.gs e crie temporariamente uma função ou use o console de execução para rodar:
+
+  configurarSegredoOttoSolar('COLOQUE_AQUI_UM_SEGREDO_FORTE_COM_24_OU_MAIS_CARACTERES')
+
+IMPORTANTE: use exatamente o mesmo valor em GAS_SHARED_SECRET na Vercel.
+
+5) TESTE A CONFIGURAÇÃO
+-----------------------
+Execute:
+
+  testarConfiguracaoOttoSolar()
+
+Deve retornar ok: true e secret_configured: true.
+
+6) PUBLIQUE COMO APP DA WEB
+---------------------------
+Apps Script > Implantar > Nova implantação > App da Web
+
+Executar como: Você
+Quem tem acesso: Qualquer pessoa
+
+Clique em Implantar e copie a URL que termina em /exec.
+Essa é a GAS_WEB_APP_URL.
+
+7) VARIÁVEIS NA VERCEL
+----------------------
+Adicione em Settings > Environment Variables:
+
+GAS_WEB_APP_URL=https://script.google.com/macros/s/SEU_DEPLOY/exec
+GAS_SHARED_SECRET=O_MESMO_SEGREDO_DO_APPS_SCRIPT
+GAS_SAVE_TIMEOUT=20000
+
+Aplique em Production (e Preview, se quiser testar em Preview).
+Depois faça novo deploy.
+
+8) CRON
+-------
+O vercel.json já contém:
+
+  /api/monitor -> */30 * * * *
+
+Ou seja: a cada 30 minutos ele consulta as plataformas, mantém a lógica de alertas existente,
+e agora também grava os dados no GAS/Google Sheets.
+
+9) COMO CONFERIR
+----------------
+Abra:
+  https://SEU-PROJETO.vercel.app/api/monitor
+
+Na resposta, procure o objeto:
+  "storage"
+
+Exemplo de sucesso:
+  "storage": {
+    "ok": true,
+    "rows": 4
+  }
+
+Na planilha, confirme novas linhas na aba USINAS_PRODUCAO.
+
+OBSERVAÇÕES IMPORTANTES
+-----------------------
+- Nenhuma senha das plataformas solares é enviada ao Google Sheets.
+- Se o GAS falhar, o monitor e os alertas NÃO param.
+- O histórico é append-only: uma nova linha por usina a cada execução.
+- USINAS_ATUAL é atualizada pela chave provider + slot + station_id.
+- Para trocar a planilha, abra o Apps Script vinculado à nova planilha e rode instalarOttoSolar() nela.

@@ -43,3 +43,8 @@ SOLAR_SOLARMAN_01_API_BASE=https://globalapi.solarmanpv.com
 
 MULTIPLOS ACESSOS
 Troque 01 por 02, 03, 04... para criar outros acessos separados.
+
+GOOGLE APPS SCRIPT — HISTÓRICO DAS USINAS
+GAS_WEB_APP_URL=https://script.google.com/macros/s/SEU_DEPLOY/exec
+GAS_SHARED_SECRET=COLOQUE_UM_SEGREDO_FORTE_COM_24_OU_MAIS_CARACTERES
+GAS_SAVE_TIMEOUT=20000

@@ -1,0 +1,35 @@
+OTTO SOLAR — ALTERAÇÕES DE PERSISTÊNCIA
+=======================================
+
+Este pacote mantém o funcionamento existente e adiciona persistência no Google Sheets.
+
+NOVO
+----
+1. lib/gas-storage.mjs
+   Envia snapshots normalizados para o Google Apps Script.
+
+2. apps-script/Code.gs
+   Web App completo que recebe os snapshots e salva em:
+   - USINAS_PRODUCAO
+   - USINAS_ATUAL
+   - USINAS_SYNC_LOG
+
+3. apps-script/appsscript.json
+   Manifesto do Apps Script.
+
+4. apps-script/INSTALAR-GAS.txt
+   Passo a passo de instalação/publicação/configuração na Vercel.
+
+ALTERADO
+--------
+1. api/monitor.mjs
+   Agora inclui mais métricas de produção e, ao finalizar a coleta,
+   envia os dados ao GAS. Falha de persistência não bloqueia monitor/alertas.
+
+2. VERCEL-ENV.txt
+   Incluídas GAS_WEB_APP_URL, GAS_SHARED_SECRET e GAS_SAVE_TIMEOUT.
+
+MANTIDO
+-------
+vercel.json continua executando /api/monitor a cada 30 minutos:
+*/30 * * * *
