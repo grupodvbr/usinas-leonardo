@@ -1,0 +1,32 @@
+OTTO SOLAR — GOOGLE APPS SCRIPT + SUPABASE
+===========================================
+
+O projeto agora grava o mesmo monitor em dois destinos independentes:
+1. Google Apps Script / Google Sheets (fluxo existente, preservado)
+2. Supabase (novo fluxo)
+
+PASSOS
+1. No Supabase, abra SQL Editor e execute:
+   supabase/solar_storage.sql
+
+2. Na Vercel, mantenha as variáveis GAS existentes e adicione:
+   SUPABASE_URL
+   SUPABASE_SERVICE_ROLE_KEY
+   SUPABASE_SAVE_TIMEOUT=20000  (opcional)
+
+3. Faça o deploy normalmente.
+
+COMPORTAMENTO
+- Se Google falhar, Supabase ainda é tentado.
+- Se Supabase falhar, Google ainda é tentado.
+- Falha de persistência não derruba coleta nem alertas.
+- /api/monitor retorna storage.gas e storage.supabase separadamente.
+
+TABELAS
+- solar_usinas_producao: histórico por execução/usina
+- solar_usinas_atual: último estado por provider + slot + station_id
+- solar_sync_log: resumo de cada sincronização
+
+SEGURANÇA
+- SUPABASE_SERVICE_ROLE_KEY fica somente na Vercel/backend.
+- As tabelas ficam com RLS ativado e sem policies públicas.

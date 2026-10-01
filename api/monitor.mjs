@@ -11,6 +11,10 @@ import {
   saveMonitorToGas
 } from '../lib/gas-storage.mjs';
 
+import {
+  saveMonitorToSupabase
+} from '../lib/supabase-storage.mjs';
+
 
 /* =========================================================
    OTTO SOLAR • MONITOR AUTOMÁTICO
@@ -1741,29 +1745,50 @@ export default {
        Falha ao salvar NÃO derruba o monitor nem os alertas.
        ===================================================== */
 
-    const storage =
-      await saveMonitorToGas({
-        checkedAt,
-        results,
-        summary: {
-          integrations_total: credentials.length,
-          integrations_ok: integrationsOk,
-          integrations_failed: integrationsFailed,
-          plants_total: allPlants.length,
-          plants_online: online.length,
-          plants_offline: offline.length,
-          plants_alarm: alarm.length,
-          alerts_attempted: allAlerts.length,
-          alerts_sent: alertsSent.length,
-          alerts_failed: alertsFailed.length,
-          duration_ms: duration
-        }
-      });
+    const storageSummary = {
+      integrations_total: credentials.length,
+      integrations_ok: integrationsOk,
+      integrations_failed: integrationsFailed,
+      plants_total: allPlants.length,
+      plants_online: online.length,
+      plants_offline: offline.length,
+      plants_alarm: alarm.length,
+      alerts_attempted: allAlerts.length,
+      alerts_sent: alertsSent.length,
+      alerts_failed: alertsFailed.length,
+      duration_ms: duration
+    };
 
-    if (storage?.ok !== true && storage?.skipped !== true) {
+    const [gasStorage, supabaseStorage] =
+      await Promise.all([
+        saveMonitorToGas({
+          checkedAt,
+          results,
+          summary: storageSummary
+        }),
+        saveMonitorToSupabase({
+          checkedAt,
+          results,
+          summary: storageSummary
+        })
+      ]);
+
+    const storage = {
+      gas: gasStorage,
+      supabase: supabaseStorage
+    };
+
+    if (gasStorage?.ok !== true && gasStorage?.skipped !== true) {
       console.error(
         '[OTTO MONITOR] ERRO SALVANDO NO GAS',
-        JSON.stringify(storage)
+        JSON.stringify(gasStorage)
+      );
+    }
+
+    if (supabaseStorage?.ok !== true && supabaseStorage?.skipped !== true) {
+      console.error(
+        '[OTTO MONITOR] ERRO SALVANDO NO SUPABASE',
+        JSON.stringify(supabaseStorage)
       );
     }
 
